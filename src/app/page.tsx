@@ -158,53 +158,6 @@ const QR_PLAN_FEATURES = [
   "7/24 teknik destek",
 ];
 
-const BLOG_POSTS = [
-  {
-    slug: "qr-menu-restoran-dijitallesme",
-    category: "QR Menü",
-    categoryColor: "#7c3aed",
-    categoryBg: "rgba(124,58,237,0.12)",
-    categoryBorder: "rgba(124,58,237,0.25)",
-    title: "QR Menü ile Restoranınızı Dijitalleştirmenin 5 Avantajı",
-    description:
-      "Kağıt menülerden dijital QR menüye geçmek yalnızca maliyet tasarrufu sağlamaz; müşteri deneyimini köklü biçimde dönüştürür ve sipariş hatalarını minimuma indirir.",
-    date: "8 Nisan 2026",
-    readTime: "4 dk",
-    gradient: "linear-gradient(135deg, #3b0764 0%, #1e1b4b 40%, #0c4a6e 100%)",
-    accentColor: "#a78bfa",
-    emoji: "📱",
-  },
-  {
-    slug: "nextjs-modern-web-gelistirme",
-    category: "Yazılım",
-    categoryColor: "#06b6d4",
-    categoryBg: "rgba(6,182,212,0.1)",
-    categoryBorder: "rgba(6,182,212,0.25)",
-    title: "Next.js 15 ile Modern Web Uygulamaları Geliştirme",
-    description:
-      "App Router, Server Components ve Turbopack ile Next.js 15'in getirdiği performans iyileştirmeleri ve yeni geliştirici deneyimini birlikte keşfediyoruz.",
-    date: "2 Nisan 2026",
-    readTime: "6 dk",
-    gradient: "linear-gradient(135deg, #042f2e 0%, #083344 40%, #172554 100%)",
-    accentColor: "#22d3ee",
-    emoji: "⚡",
-  },
-  {
-    slug: "ui-ux-saas-tasarim-ilkeleri",
-    category: "Tasarım",
-    categoryColor: "#10b981",
-    categoryBg: "rgba(16,185,129,0.1)",
-    categoryBorder: "rgba(16,185,129,0.25)",
-    title: "SaaS Ürünleri İçin UI/UX Tasarım İlkeleri",
-    description:
-      "Dönüşüm oranlarını artıran, kullanıcıyı elde tutan ve rakiplerden sıyrılan modern SaaS arayüzleri tasarlarken dikkat etmeniz gereken temel prensipler.",
-    date: "28 Mart 2026",
-    readTime: "5 dk",
-    gradient: "linear-gradient(135deg, #052e16 0%, #14532d 40%, #1c1917 100%)",
-    accentColor: "#34d399",
-    emoji: "🎨",
-  },
-];
 
 // ─────────────────────────────────────────────
 // Animation Variants
@@ -1505,7 +1458,22 @@ function CTASection() {
 // ─────────────────────────────────────────────
 // Blog Section
 // ─────────────────────────────────────────────
+type HomeBlogPost = {
+  slug: string; gradient: string; accentColor: string; emoji: string;
+  categoryColor: string; categoryBg: string; categoryBorder: string;
+  category: string; date: string; readTime: string; title: string; description: string;
+};
+
 function BlogSection() {
+  const [posts, setPosts] = useState<HomeBlogPost[]>([]);
+
+  useEffect(() => {
+    fetch("/api/blog")
+      .then((r) => r.json())
+      .then((data) => setPosts(data.slice(0, 3)))
+      .catch(() => {});
+  }, []);
+
   return (
     <section
       style={{ position: "relative", overflow: "hidden" }}
@@ -1625,7 +1593,7 @@ function BlogSection() {
 
         {/* Cards grid */}
         <AnimatedSection className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BLOG_POSTS.map((post, i) => (
+          {posts.map((post, i) => (
             <motion.div
               key={post.slug}
               variants={scaleIn}
