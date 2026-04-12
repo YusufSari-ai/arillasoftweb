@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Code2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Menu, X, Code2, ArrowRight } from 'lucide-react';
 import { NAV_LINKS } from '@/lib/constants';
-import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,37 +23,57 @@ export default function Navbar() {
 
   return (
     <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
-          : 'bg-transparent'
-      )}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        transition: 'all 0.3s ease',
+        background: scrolled ? 'rgba(8, 9, 13, 0.92)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(16px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.07)' : '1px solid transparent',
+      }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '68px' }}>
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Code2 className="h-5 w-5 text-white" />
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 20px rgba(124,58,237,0.4)',
+              }}
+            >
+              <Code2 size={18} color="white" />
             </div>
-            <span className={cn('transition-colors', scrolled ? 'text-slate-900' : 'text-slate-900')}>
-              Arillasoft
+            <span style={{ fontWeight: 700, fontSize: '18px', color: '#f1f5f9', letterSpacing: '-0.3px' }}>
+              Arilla<span style={{ color: '#8b5cf6' }}>soft</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((link) => (
+          <nav className="hidden lg:flex items-center gap-1">
+            {NAV_LINKS.slice(0, 6).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={cn(
-                  'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                  pathname === link.href
-                    ? 'text-blue-600 bg-blue-50'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                )}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: pathname === link.href ? '#a78bfa' : '#94a3b8',
+                  background: pathname === link.href ? 'rgba(124,58,237,0.1)' : 'transparent',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                }}
               >
                 {link.label}
               </Link>
@@ -63,46 +81,94 @@ export default function Navbar() {
           </nav>
 
           {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button size="sm" asChild>
-              <Link href="/teklif-al">Teklif Al</Link>
-            </Button>
+          <div className="hidden lg:flex items-center gap-3">
+            <Link
+              href="/teklif-al"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '9px 20px',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: 600,
+                textDecoration: 'none',
+                color: 'white',
+                background: 'linear-gradient(135deg, #7c3aed, #5b21b6)',
+                boxShadow: '0 0 20px rgba(124,58,237,0.3)',
+                transition: 'all 0.2s',
+              }}
+            >
+              Teklif Al <ArrowRight size={14} />
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
           <button
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+            className="lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
+            style={{
+              background: 'rgba(255,255,255,0.07)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              padding: '8px',
+              color: '#f1f5f9',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             aria-label="Menüyü aç/kapat"
           >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-slate-100 shadow-lg">
-          <nav className="px-4 py-3 space-y-1">
+        <div
+          style={{
+            background: 'rgba(8, 9, 13, 0.98)',
+            borderTop: '1px solid rgba(255,255,255,0.07)',
+            backdropFilter: 'blur(16px)',
+          }}
+          className="lg:hidden"
+        >
+          <nav style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={cn(
-                  'block px-4 py-2.5 text-sm font-medium rounded-lg transition-colors',
-                  pathname === link.href
-                    ? 'text-blue-600 bg-blue-50'
-                    : 'text-slate-700 hover:bg-slate-50'
-                )}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  fontWeight: 500,
+                  color: pathname === link.href ? '#a78bfa' : '#94a3b8',
+                  background: pathname === link.href ? 'rgba(124,58,237,0.08)' : 'transparent',
+                  textDecoration: 'none',
+                }}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-2 pb-1">
-              <Button className="w-full" asChild>
-                <Link href="/teklif-al">Teklif Al</Link>
-              </Button>
-            </div>
+            <Link
+              href="/teklif-al"
+              style={{
+                marginTop: '8px',
+                padding: '11px 20px',
+                borderRadius: '10px',
+                textAlign: 'center',
+                fontWeight: 600,
+                fontSize: '15px',
+                textDecoration: 'none',
+                color: 'white',
+                background: 'linear-gradient(135deg, #7c3aed, #5b21b6)',
+              }}
+            >
+              Teklif Al
+            </Link>
           </nav>
         </div>
       )}
