@@ -4,15 +4,19 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   FileText,
-  TrendingUp,
-  Eye,
-  Clock,
-  ArrowRight,
-  PenSquare,
   Wrench,
   FolderKanban,
+  Mail,
+  ArrowRight,
+  PenSquare,
+  MailOpen,
 } from "lucide-react";
 import { getAdminPosts, type AdminPost } from "@/lib/blog-actions";
+import {
+  getDashboardData,
+  type DashboardStats,
+  type RecentMessage,
+} from "@/lib/dashboard-actions";
 
 const CATEGORY_META: Record<string, { color: string; bg: string; border: string }> = {
   "QR Menü": { color: "#7c3aed", bg: "rgba(124,58,237,0.12)", border: "rgba(124,58,237,0.25)" },
@@ -59,66 +63,78 @@ const quickActions = [
   },
   {
     label: "Servisler",
-    desc: "Yakında kullanılabilir olacak",
-    href: "#",
+    desc: "Servisleri yönet ve düzenle",
+    href: "/admin/services",
     icon: Wrench,
-    color: "#475569",
-    bg: "rgba(71,85,105,0.1)",
-    disabled: true,
+    color: "#22d3ee",
+    bg: "rgba(6,182,212,0.1)",
   },
   {
-    label: "Projeler",
-    desc: "Yakında kullanılabilir olacak",
-    href: "#",
-    icon: FolderKanban,
-    color: "#475569",
-    bg: "rgba(71,85,105,0.1)",
-    disabled: true,
+    label: "İletişim Mesajları",
+    desc: "Gelen mesajları görüntüle ve yanıtla",
+    href: "/admin/contact",
+    icon: Mail,
+    color: "#a78bfa",
+    bg: "rgba(124,58,237,0.12)",
   },
 ];
 
+const DEFAULT_STATS: DashboardStats = {
+  blogCount: 0,
+  serviceCount: 0,
+  projectCount: 0,
+  unreadMessages: 0,
+};
+
 export default function AdminDashboard() {
   const [posts, setPosts] = useState<PostDisplay[]>([]);
+  const [stats, setStats] = useState<DashboardStats>(DEFAULT_STATS);
+  const [recentMessages, setRecentMessages] = useState<RecentMessage[]>([]);
 
   useEffect(() => {
-    getAdminPosts().then((data) => setPosts(data.map(adaptPost))).catch(() => {});
+    getAdminPosts()
+      .then((data) => setPosts(data.map(adaptPost)))
+      .catch(() => {});
+
+    getDashboardData()
+      .then(({ stats: s, recentMessages: msgs }) => {
+        setStats(s);
+        setRecentMessages(msgs);
+      })
+      .catch(() => {});
   }, []);
 
   const recentPosts = posts.slice(0, 4);
 
-  const stats = [
+  const statCards = [
     {
-      label: "Toplam Blog Yazısı",
-      value: posts.length.toString(),
+      label: "Blog Yazıları",
+      value: stats.blogCount.toString(),
       icon: FileText,
-      change: "+2 bu ay",
       color: "#7c3aed",
       bg: "rgba(124,58,237,0.12)",
       border: "rgba(124,58,237,0.2)",
     },
     {
-      label: "Toplam Görüntülenme",
-      value: "12.4K",
-      icon: Eye,
-      change: "+18% bu ay",
+      label: "Servisler",
+      value: stats.serviceCount.toString(),
+      icon: Wrench,
       color: "#06b6d4",
       bg: "rgba(6,182,212,0.1)",
       border: "rgba(6,182,212,0.2)",
     },
     {
-      label: "Ort. Okuma Süresi",
-      value: "5.8 dk",
-      icon: Clock,
-      change: "stabil",
+      label: "Projeler",
+      value: stats.projectCount.toString(),
+      icon: FolderKanban,
       color: "#10b981",
       bg: "rgba(16,185,129,0.1)",
       border: "rgba(16,185,129,0.2)",
     },
     {
-      label: "Büyüme Oranı",
-      value: "%24",
-      icon: TrendingUp,
-      change: "+4% geçen aya göre",
+      label: "Okunmamış Mesaj",
+      value: stats.unreadMessages.toString(),
+      icon: Mail,
       color: "#f59e0b",
       bg: "rgba(245,158,11,0.1)",
       border: "rgba(245,158,11,0.2)",
@@ -139,7 +155,7 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {stats.map((stat) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
@@ -161,11 +177,8 @@ export default function AdminDashboard() {
               <p className="text-3xl font-bold mb-1" style={{ color: "#f1f5f9" }}>
                 {stat.value}
               </p>
-              <p className="text-sm mb-1" style={{ color: "#64748b" }}>
+              <p className="text-sm" style={{ color: "#64748b" }}>
                 {stat.label}
-              </p>
-              <p className="text-xs font-medium" style={{ color: stat.color }}>
-                {stat.change}
               </p>
             </div>
           );
@@ -246,121 +259,135 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div
-          className="rounded-xl"
-          style={{
-            background: "#111219",
-            border: "1px solid rgba(255,255,255,0.07)",
-          }}
-        >
+        {/* Right panel */}
+        <div className="flex flex-col gap-6">
+          {/* Quick Actions */}
           <div
-            className="px-6 py-4"
-            style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+            className="rounded-xl"
+            style={{
+              background: "#111219",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
           >
-            <h2 className="text-base font-semibold" style={{ color: "#f1f5f9" }}>
-              Hızlı Erişim
-            </h2>
-          </div>
-          <div className="p-4 space-y-3">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              const content = (
-                <div
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-                    action.disabled
-                      ? "cursor-not-allowed opacity-40"
-                      : "hover:bg-white/[0.04] cursor-pointer"
-                  }`}
-                  style={{ border: "1px solid rgba(255,255,255,0.06)" }}
-                >
-                  <div
-                    className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: action.bg }}
-                  >
-                    <Icon size={16} style={{ color: action.color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className="text-sm font-medium"
-                      style={{ color: action.disabled ? "#475569" : "#f1f5f9" }}
-                    >
-                      {action.label}
-                    </p>
-                    <p className="text-xs mt-0.5 truncate" style={{ color: "#475569" }}>
-                      {action.desc}
-                    </p>
-                  </div>
-                  {!action.disabled && (
-                    <ArrowRight size={14} style={{ color: "#475569" }} />
-                  )}
-                  {action.disabled && (
-                    <span
-                      className="text-xs px-1.5 py-0.5 rounded flex-shrink-0"
-                      style={{
-                        background: "rgba(255,255,255,0.04)",
-                        color: "#475569",
-                        border: "1px solid rgba(255,255,255,0.06)",
-                      }}
-                    >
-                      Yakında
-                    </span>
-                  )}
-                </div>
-              );
-
-              return action.disabled ? (
-                <div key={action.label}>{content}</div>
-              ) : (
-                <Link key={action.label} href={action.href}>
-                  {content}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Category breakdown */}
-          {posts.length > 0 && (
             <div
-              className="px-6 py-4 mt-2"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+              className="px-6 py-4"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
             >
-              <p
-                className="text-xs font-semibold uppercase tracking-wider mb-3"
-                style={{ color: "#475569" }}
-              >
-                Kategori Dağılımı
-              </p>
-              <div className="space-y-2">
-                {Array.from(new Set(posts.map((p) => p.category))).map((cat) => {
-                  const catPosts = posts.filter((p) => p.category === cat);
-                  const meta = CATEGORY_META[cat] ?? CATEGORY_META["Genel"];
-                  const pct = Math.round((catPosts.length / posts.length) * 100);
-                  return (
-                    <div key={cat}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs" style={{ color: "#94a3b8" }}>
-                          {cat}
-                        </span>
-                        <span className="text-xs" style={{ color: "#64748b" }}>
-                          {catPosts.length}
-                        </span>
-                      </div>
-                      <div
-                        className="h-1 rounded-full overflow-hidden"
-                        style={{ background: "rgba(255,255,255,0.06)" }}
-                      >
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${pct}%`, background: meta.color, opacity: 0.7 }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <h2 className="text-base font-semibold" style={{ color: "#f1f5f9" }}>
+                Hızlı Erişim
+              </h2>
             </div>
-          )}
+            <div className="p-4 space-y-3">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Link key={action.label} href={action.href}>
+                    <div
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/[0.04] cursor-pointer transition-all"
+                      style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+                    >
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{ background: action.bg }}
+                      >
+                        <Icon size={16} style={{ color: action.color }} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium" style={{ color: "#f1f5f9" }}>
+                          {action.label}
+                        </p>
+                        <p className="text-xs mt-0.5 truncate" style={{ color: "#475569" }}>
+                          {action.desc}
+                        </p>
+                      </div>
+                      <ArrowRight size={14} style={{ color: "#475569" }} />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Recent contact messages */}
+          <div
+            className="rounded-xl flex-1"
+            style={{
+              background: "#111219",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <div
+              className="flex items-center justify-between px-6 py-4"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+            >
+              <h2 className="text-base font-semibold" style={{ color: "#f1f5f9" }}>
+                Son Mesajlar
+              </h2>
+              <Link
+                href="/admin/contact"
+                className="text-xs flex items-center gap-1 hover:opacity-80 transition-opacity"
+                style={{ color: "#a78bfa" }}
+              >
+                Tümünü gör <ArrowRight size={12} />
+              </Link>
+            </div>
+
+            <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+              {recentMessages.length === 0 ? (
+                <p className="px-6 py-8 text-sm text-center" style={{ color: "#475569" }}>
+                  Henüz mesaj yok.
+                </p>
+              ) : (
+                recentMessages.map((msg) => (
+                  <Link
+                    key={msg.id}
+                    href="/admin/contact"
+                    className="flex items-start gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                      style={
+                        msg.isRead
+                          ? { background: "rgba(255,255,255,0.04)" }
+                          : { background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.2)" }
+                      }
+                    >
+                      {msg.isRead ? (
+                        <MailOpen size={14} style={{ color: "#475569" }} />
+                      ) : (
+                        <Mail size={14} style={{ color: "#22d3ee" }} />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p
+                          className="text-xs font-semibold truncate"
+                          style={{ color: msg.isRead ? "#94a3b8" : "#f1f5f9" }}
+                        >
+                          {msg.fullName}
+                        </p>
+                        {!msg.isRead && (
+                          <span
+                            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                            style={{ background: "#22d3ee" }}
+                          />
+                        )}
+                      </div>
+                      <p className="text-xs mt-0.5 truncate" style={{ color: "#475569" }}>
+                        {msg.subject}
+                      </p>
+                      <p className="text-xs mt-0.5" style={{ color: "#334155" }}>
+                        {new Date(msg.createdAt).toLocaleDateString("tr-TR", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </p>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

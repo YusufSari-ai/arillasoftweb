@@ -8,6 +8,8 @@ import {
   Wrench,
   FolderKanban,
   Lightbulb,
+  Mail,
+  Settings,
   ChevronRight,
   Menu,
   X,
@@ -32,14 +34,12 @@ const navItems = [
     href: "/admin/services",
     icon: Wrench,
     exact: false,
-    disabled: true,
   },
   {
     label: "Projects",
     href: "/admin/projects",
     icon: FolderKanban,
     exact: false,
-    disabled: true,
   },
   {
     label: "Solutions",
@@ -47,6 +47,18 @@ const navItems = [
     icon: Lightbulb,
     exact: false,
     disabled: true,
+  },
+  {
+    label: "İletişim",
+    href: "/admin/contact",
+    icon: Mail,
+    exact: false,
+  },
+  {
+    label: "Site Ayarları",
+    href: "/admin/settings",
+    icon: Settings,
+    exact: false,
   },
 ];
 
@@ -78,9 +90,8 @@ export default function AdminLayout({
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-30 h-full w-64 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-30 h-full w-64 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
         style={{
           background: "#111219",
           borderRight: "1px solid rgba(255,255,255,0.07)",
@@ -148,14 +159,14 @@ export default function AdminLayout({
                     style={
                       active
                         ? {
-                            background:
-                              "linear-gradient(135deg, rgba(124,58,237,0.2), rgba(6,182,212,0.1))",
-                            color: "#a78bfa",
-                            border: "1px solid rgba(124,58,237,0.25)",
-                          }
+                          background:
+                            "linear-gradient(135deg, rgba(124,58,237,0.2), rgba(6,182,212,0.1))",
+                          color: "#a78bfa",
+                          border: "1px solid rgba(124,58,237,0.25)",
+                        }
                         : {
-                            color: "#94a3b8",
-                          }
+                          color: "#94a3b8",
+                        }
                     }
                   >
                     <Icon

@@ -57,10 +57,13 @@ async function upsertCategory(name: string): Promise<string> {
 
 export type PostDraft = {
   title: string;
+  slug: string;
   description: string;
   category: string;
   readTime: string;
   emoji: string;
+  published: boolean;
+  coverImage: string;
 };
 
 export type AdminPost = {
@@ -70,13 +73,14 @@ export type AdminPost = {
   excerpt: string;
   content: string;
   readingTime: number;
+  published: boolean;
+  coverImage: string | null;
   createdAt: string;
   category: { name: string } | null;
 };
 
 export async function getAdminPosts(): Promise<AdminPost[]> {
   const posts = await prisma.blogPost.findMany({
-    where: { published: true },
     include: { category: true },
     orderBy: { createdAt: "desc" },
   });
@@ -87,13 +91,15 @@ export async function getAdminPosts(): Promise<AdminPost[]> {
     excerpt: p.excerpt,
     content: p.content,
     readingTime: p.readingTime,
+    published: p.published,
+    coverImage: p.coverImage,
     createdAt: p.createdAt.toISOString(),
     category: p.category ? { name: p.category.name } : null,
   }));
 }
 
 export async function createPost(draft: PostDraft): Promise<void> {
-  const slug = slugify(draft.title) || `post-${Date.now()}`;
+  const slug = slugify(draft.slug || draft.title) || `post-${Date.now()}`;
   const categoryId = await upsertCategory(draft.category);
   const meta = CATEGORY_META[draft.category] ?? DEFAULT_META;
   const readingTime = parseInt(draft.readTime) || 5;
@@ -110,8 +116,9 @@ export async function createPost(draft: PostDraft): Promise<void> {
         sections: [{ type: "paragraph", text: draft.description }],
       }),
       readingTime,
-      published: true,
-      publishedAt: new Date(),
+      published: draft.published,
+      publishedAt: draft.published ? new Date() : null,
+      coverImage: draft.coverImage || null,
       categoryId,
     },
   });
@@ -137,6 +144,9 @@ export async function updatePost(id: string, draft: PostDraft): Promise<void> {
         sections: [{ type: "paragraph", text: draft.description }],
       }),
       readingTime,
+      published: draft.published,
+      publishedAt: draft.published ? new Date() : null,
+      coverImage: draft.coverImage || null,
       categoryId,
     },
   });

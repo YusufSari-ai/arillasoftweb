@@ -21,6 +21,17 @@ import {
   type PostDraft,
 } from "@/lib/blog-actions";
 
+/* ─── Slug helper (client-side) ─────────────── */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
+    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
 /* ─── Category Options ───────────────────────── */
 const CATEGORY_OPTIONS = [
   { label: "QR Menü", color: "#7c3aed", bg: "rgba(124,58,237,0.12)", border: "rgba(124,58,237,0.25)" },
@@ -45,6 +56,8 @@ type PostDisplay = {
   categoryBorder: string;
   date: string;
   readTime: string;
+  published: boolean;
+  coverImage: string | null;
 };
 
 function adaptPost(post: AdminPost): PostDisplay {
@@ -72,6 +85,8 @@ function adaptPost(post: AdminPost): PostDisplay {
       year: "numeric",
     }),
     readTime: `${post.readingTime} dk`,
+    published: post.published,
+    coverImage: post.coverImage,
   };
 }
 
@@ -88,13 +103,9 @@ function PostModal({
   onClose: () => void;
 }) {
   const [draft, setDraft] = useState<PostDraft>(initial);
-
-  const set =
-    (key: keyof PostDraft) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-      setDraft((prev) => ({ ...prev, [key]: e.target.value }));
-
-  const selectedCat = CATEGORY_OPTIONS.find((c) => c.label === draft.category);
+  const [slugEdited, setSlugEdited] = useState(mode === "edit");
+  const [imgError, setImgError] = useState(false);
+  const [errors, setErrors] = useState<{ title?: string; description?: string; slug?: string }>({});
 
   const inputStyle: React.CSSProperties = {
     background: "#08090d",
@@ -107,12 +118,54 @@ function PostModal({
     outline: "none",
   };
 
+  const errorBorder: React.CSSProperties = { borderColor: "rgba(248,113,113,0.55)" };
+  const errorText: React.CSSProperties = { color: "#f87171", fontSize: 11, marginTop: 5 };
+
+  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const title = e.target.value;
+    setDraft((prev) => ({
+      ...prev,
+      title,
+      ...(slugEdited ? {} : { slug: slugify(title) }),
+    }));
+    if (errors.title) setErrors((prev) => ({ ...prev, title: undefined }));
+  }
+
+  function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSlugEdited(true);
+    setDraft((prev) => ({ ...prev, slug: e.target.value }));
+    if (errors.slug) setErrors((prev) => ({ ...prev, slug: undefined }));
+  }
+
+  const set =
+    (key: keyof PostDraft) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      setDraft((prev) => ({ ...prev, [key]: e.target.value }));
+      if (key === "description" && errors.description)
+        setErrors((prev) => ({ ...prev, description: undefined }));
+      if (key === "coverImage") setImgError(false);
+    };
+
+  function validate(): boolean {
+    const next: typeof errors = {};
+    if (!draft.title.trim()) next.title = "Başlık zorunludur.";
+    if (!draft.description.trim()) next.description = "Açıklama zorunludur.";
+    if (!draft.slug.trim()) next.slug = "Slug zorunludur.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
+
+  const selectedCat = CATEGORY_OPTIONS.find((c) => c.label === draft.category);
+  const showImgPreview =
+    !!draft.coverImage && draft.coverImage.startsWith("http") && !imgError;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
       <div
         className="w-full max-w-lg rounded-xl shadow-2xl flex flex-col max-h-[90vh]"
         style={{ background: "#111219", border: "1px solid rgba(255,255,255,0.1)" }}
       >
+        {/* Header */}
         <div
           className="flex items-center justify-between px-6 py-4 flex-shrink-0"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
@@ -132,7 +185,10 @@ function PostModal({
           </button>
         </div>
 
+        {/* Body */}
         <div className="overflow-y-auto flex-1 px-6 py-5 space-y-4">
+
+          {/* Emoji + Title */}
           <div className="flex gap-3">
             <div className="flex-shrink-0">
               <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
@@ -151,13 +207,37 @@ function PostModal({
               </label>
               <input
                 value={draft.title}
-                onChange={set("title")}
+                onChange={handleTitleChange}
                 placeholder="Blog yazısı başlığı..."
-                style={inputStyle}
+                style={{ ...inputStyle, ...(errors.title ? errorBorder : {}) }}
               />
+              {errors.title && <p style={errorText}>{errors.title}</p>}
             </div>
           </div>
 
+          {/* Slug */}
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
+              Slug{" "}
+              {mode === "new" && (
+                <span style={{ color: "#334155", fontWeight: 400 }}>(başlıktan otomatik)</span>
+              )}
+            </label>
+            <input
+              value={draft.slug}
+              onChange={handleSlugChange}
+              readOnly={mode === "edit"}
+              placeholder="blog-yazi-slug"
+              style={{
+                ...inputStyle,
+                ...(mode === "edit" ? { color: "#475569", cursor: "default" } : {}),
+                ...(errors.slug ? errorBorder : {}),
+              }}
+            />
+            {errors.slug && <p style={errorText}>{errors.slug}</p>}
+          </div>
+
+          {/* Description */}
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
               Açıklama *
@@ -167,10 +247,38 @@ function PostModal({
               onChange={set("description")}
               placeholder="Kısa bir açıklama yazın..."
               rows={3}
-              style={{ ...inputStyle, resize: "none" }}
+              style={{ ...inputStyle, resize: "none", ...(errors.description ? errorBorder : {}) }}
             />
+            {errors.description && <p style={errorText}>{errors.description}</p>}
           </div>
 
+          {/* Cover Image */}
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
+              Kapak Görseli URL
+            </label>
+            <input
+              value={draft.coverImage}
+              onChange={set("coverImage")}
+              placeholder="https://..."
+              style={inputStyle}
+            />
+            {showImgPreview && (
+              <div
+                className="mt-2 rounded-lg overflow-hidden"
+                style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                <img
+                  src={draft.coverImage}
+                  alt="Kapak önizleme"
+                  onError={() => setImgError(true)}
+                  style={{ width: "100%", height: 120, objectFit: "cover", display: "block" }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Category + Read time */}
           <div className="flex gap-3">
             <div className="flex-1">
               <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
@@ -197,6 +305,7 @@ function PostModal({
             </div>
           </div>
 
+          {/* Category preview */}
           {selectedCat && (
             <div className="flex items-center gap-2 pt-1">
               <span className="text-xs" style={{ color: "#475569" }}>Önizleme:</span>
@@ -212,8 +321,42 @@ function PostModal({
               </span>
             </div>
           )}
+
+          {/* Status toggle */}
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
+              Durum
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setDraft((prev) => ({ ...prev, published: true }))}
+                className="flex-1 py-2 text-xs rounded-lg transition-all"
+                style={
+                  draft.published
+                    ? { background: "rgba(16,185,129,0.15)", color: "#34d399", border: "1px solid rgba(16,185,129,0.35)" }
+                    : { background: "rgba(255,255,255,0.03)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)" }
+                }
+              >
+                Yayında
+              </button>
+              <button
+                type="button"
+                onClick={() => setDraft((prev) => ({ ...prev, published: false }))}
+                className="flex-1 py-2 text-xs rounded-lg transition-all"
+                style={
+                  !draft.published
+                    ? { background: "rgba(245,158,11,0.15)", color: "#fbbf24", border: "1px solid rgba(245,158,11,0.35)" }
+                    : { background: "rgba(255,255,255,0.03)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)" }
+                }
+              >
+                Taslak
+              </button>
+            </div>
+          </div>
         </div>
 
+        {/* Footer */}
         <div
           className="flex items-center justify-end gap-3 px-6 py-4 flex-shrink-0"
           style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
@@ -226,14 +369,9 @@ function PostModal({
             İptal
           </button>
           <button
-            onClick={() => {
-              if (draft.title.trim() && draft.description.trim()) onSave(draft);
-            }}
+            onClick={() => { if (validate()) onSave(draft); }}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all hover:opacity-90"
-            style={{
-              background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
-              color: "#fff",
-            }}
+            style={{ background: "linear-gradient(135deg, #7c3aed, #06b6d4)", color: "#fff" }}
           >
             <Save size={14} />
             {mode === "new" ? "Yayınla" : "Kaydet"}
@@ -360,19 +498,25 @@ export default function AdminBlogPage() {
 
   const defaultDraft: PostDraft = {
     title: "",
+    slug: "",
     description: "",
     category: "Genel",
     readTime: "5 dk",
     emoji: "📝",
+    published: true,
+    coverImage: "",
   };
 
   const editDraft: PostDraft = editTarget
     ? {
         title: editTarget.title,
+        slug: editTarget.slug,
         description: editTarget.description,
         category: editTarget.category,
         readTime: editTarget.readTime,
         emoji: editTarget.emoji,
+        published: editTarget.published,
+        coverImage: editTarget.coverImage ?? "",
       }
     : defaultDraft;
 
@@ -509,7 +653,7 @@ export default function AdminBlogPage() {
         >
           {/* Table header — desktop */}
           <div
-            className="hidden sm:grid sm:grid-cols-[auto_1fr_auto_auto_auto] gap-4 px-6 py-3 text-xs font-semibold uppercase tracking-wider"
+            className="hidden sm:grid sm:grid-cols-[auto_1fr_auto_auto_auto_auto] gap-4 px-6 py-3 text-xs font-semibold uppercase tracking-wider"
             style={{
               color: "#475569",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -519,6 +663,7 @@ export default function AdminBlogPage() {
             <span />
             <span>Başlık</span>
             <span>Kategori</span>
+            <span>Durum</span>
             <span>Tarih</span>
             <span>İşlemler</span>
           </div>
@@ -527,7 +672,7 @@ export default function AdminBlogPage() {
             {filtered.map((post) => (
               <div
                 key={post.id}
-                className="flex flex-col sm:grid sm:grid-cols-[auto_1fr_auto_auto_auto] sm:items-center gap-3 sm:gap-4 px-6 py-4 hover:bg-white/[0.015] transition-colors group"
+                className="flex flex-col sm:grid sm:grid-cols-[auto_1fr_auto_auto_auto_auto] sm:items-center gap-3 sm:gap-4 px-6 py-4 hover:bg-white/[0.015] transition-colors group"
               >
                 {/* Emoji */}
                 <div
@@ -545,7 +690,7 @@ export default function AdminBlogPage() {
                   <p className="text-xs mt-0.5 line-clamp-1" style={{ color: "#475569" }}>
                     {post.description}
                   </p>
-                  <div className="flex items-center gap-2 mt-1.5 sm:hidden">
+                  <div className="flex items-center gap-2 mt-1.5 sm:hidden flex-wrap">
                     <span
                       className="text-xs px-2 py-0.5 rounded-full"
                       style={{
@@ -555,6 +700,16 @@ export default function AdminBlogPage() {
                       }}
                     >
                       {post.category}
+                    </span>
+                    <span
+                      className="text-xs px-2 py-0.5 rounded-full"
+                      style={
+                        post.published
+                          ? { background: "rgba(16,185,129,0.12)", color: "#34d399", border: "1px solid rgba(16,185,129,0.3)" }
+                          : { background: "rgba(245,158,11,0.12)", color: "#fbbf24", border: "1px solid rgba(245,158,11,0.3)" }
+                      }
+                    >
+                      {post.published ? "Yayında" : "Taslak"}
                     </span>
                     <span className="text-xs" style={{ color: "#475569" }}>
                       {post.date}
@@ -572,6 +727,18 @@ export default function AdminBlogPage() {
                   }}
                 >
                   {post.category}
+                </span>
+
+                {/* Status badge — desktop */}
+                <span
+                  className="hidden sm:inline-block text-xs px-2.5 py-1 rounded-full whitespace-nowrap"
+                  style={
+                    post.published
+                      ? { background: "rgba(16,185,129,0.12)", color: "#34d399", border: "1px solid rgba(16,185,129,0.3)" }
+                      : { background: "rgba(245,158,11,0.12)", color: "#fbbf24", border: "1px solid rgba(245,158,11,0.3)" }
+                  }
+                >
+                  {post.published ? "Yayında" : "Taslak"}
                 </span>
 
                 {/* Date — desktop */}

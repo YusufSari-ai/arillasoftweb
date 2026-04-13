@@ -41,6 +41,7 @@ import {
   MonitorSmartphone,
   Calendar,
   BookOpen,
+  Wrench,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────
@@ -51,7 +52,7 @@ const NAV_LINKS = [
   { label: "Hakkımızda", href: "/hakkimizda" },
   { label: "Hizmetler", href: "/hizmetler" },
   { label: "Çözümler", href: "/cozumler" },
-  { label: "Projeler", href: "/projeler" },
+  { label: "Projeler", href: "/projects" },
   { label: "Blog", href: "/blog" },
   { label: "İletişim", href: "/iletisim" },
 ];
@@ -95,44 +96,26 @@ const QR_FEATURES = [
   },
 ];
 
-const SERVICES = [
-  {
-    icon: Globe,
-    title: "Web Uygulama Geliştirme",
-    description: "Modern, hızlı ve ölçeklenebilir web uygulamaları. React, Next.js ve TypeScript ile.",
-    href: "/hizmetler/web-uygulama-gelistirme",
-  },
-  {
-    icon: Smartphone,
-    title: "Mobil Uygulama",
-    description: "iOS ve Android için native deneyim sunan cross-platform mobil uygulamalar.",
-    href: "/hizmetler/mobil-uygulama-gelistirme",
-  },
-  {
-    icon: Cpu,
-    title: "Özel Yazılım",
-    description: "İşletmenizin özgün ihtiyaçlarına göre tasarlanmış kurumsal yazılım çözümleri.",
-    href: "/hizmetler/ozel-yazilim-gelistirme",
-  },
-  {
-    icon: Layers,
-    title: "Backend & API",
-    description: "Yüksek performanslı, güvenli ve ölçeklenebilir backend sistemleri ve REST/GraphQL API'ler.",
-    href: "/hizmetler/backend-ve-api-gelistirme",
-  },
-  {
-    icon: Palette,
-    title: "UI/UX Tasarımı",
-    description: "Kullanıcı odaklı, dönüşüm artıran arayüz tasarımı ve deneyim mimarisi.",
-    href: "/hizmetler/ui-ux-tasarimi",
-  },
-  {
-    icon: Shield,
-    title: "Bakım & Destek",
-    description: "7/24 teknik destek, güvenlik güncellemeleri ve sürekli performans optimizasyonu.",
-    href: "/hizmetler/bakim-ve-teknik-destek",
-  },
-];
+const SERVICE_ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
+  Globe,
+  Smartphone,
+  Cpu,
+  Layers,
+  Palette,
+  Shield,
+  Code2,
+  Zap,
+  Lock,
+  Wrench,
+};
+
+type DbService = {
+  id: string;
+  title: string;
+  shortDescription: string;
+  icon: string;
+  slug: string;
+};
 
 const STATS = [
   { value: "150+", label: "Tamamlanan Proje", icon: Package },
@@ -146,6 +129,31 @@ const TECH_STACK = [
   "Python", "PostgreSQL", "MongoDB", "React Native", "Flutter",
   "AWS", "Docker", "Redis", "Kubernetes", "GraphQL",
 ];
+
+type SiteSettings = {
+  heroTitle: string;
+  heroSubtitle: string;
+  heroPrimaryButton: string;
+  heroSecondaryButton: string;
+  homepageIntro: string;
+  whyChooseUsTitle: string;
+  whyChooseUsText: string;
+  homepageCTA: string;
+};
+
+const DEFAULT_SETTINGS: SiteSettings = {
+  heroTitle: "Restoranınız İçin|Akıllı Dijital Menü Sistemi",
+  heroSubtitle:
+    "QR kod ile anında erişilen, anlık güncellenebilen, çok dilli dijital menü çözümü. Müşteri deneyimini dönüştürün, maliyetleri azaltın.",
+  heroPrimaryButton: "Demo Talep Et",
+  heroSecondaryButton: "Tüm Hizmetler",
+  homepageIntro:
+    "Web'den mobilye, backend'den UI/UX tasarımına — uçtan uca dijital dönüşüm hizmetleri.",
+  whyChooseUsTitle: "QR Menü Sistemi ile|Restoranınızı Dönüştürün",
+  whyChooseUsText:
+    "Masaya QR kodu koyun, müşterileriniz menüye anında ulaşsın. Baskı masrafı yok, güncelleme zahmeti yok.",
+  homepageCTA: "Dijital Dönüşümünüzü|Bugün Başlatın",
+};
 
 const QR_PLAN_FEATURES = [
   "Sınırsız ürün ve kategori",
@@ -201,6 +209,18 @@ function AnimatedSection({
     >
       {children}
     </motion.div>
+  );
+}
+
+function renderGradientText(text: string) {
+  const parts = text.split("|");
+  if (parts.length === 1) return <>{text}</>;
+  return (
+    <>
+      {parts[0]}
+      <span className="gradient-text">{parts[1]}</span>
+      {parts[2] ?? ""}
+    </>
   );
 }
 
@@ -565,7 +585,7 @@ function QRPhoneMockup() {
 // ─────────────────────────────────────────────
 // Hero Section
 // ─────────────────────────────────────────────
-function HeroSection() {
+function HeroSection({ settings }: { settings: SiteSettings }) {
   return (
     <section
       style={{
@@ -653,9 +673,7 @@ function HeroSection() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-slate-100"
               style={{ margin: 0, wordBreak: "break-word", lineHeight: 1.15 }}
             >
-              Restoranınız İçin{" "}
-              <span className="gradient-text">Akıllı Dijital Menü</span>{" "}
-              Sistemi
+              {renderGradientText(settings.heroTitle)}
             </h1>
           </motion.div>
 
@@ -669,8 +687,7 @@ function HeroSection() {
               margin: 0,
             }}
           >
-            QR kod ile anında erişilen, anlık güncellenebilen, çok dilli dijital menü çözümü.
-            Müşteri deneyimini dönüştürün, maliyetleri azaltın.
+            {settings.heroSubtitle}
           </motion.p>
 
           {/* Feature bullets */}
@@ -718,7 +735,7 @@ function HeroSection() {
               }}
             >
               <QrCode size={15} />
-              Demo Talep Et
+              {settings.heroPrimaryButton}
             </Link>
             <Link
               href="/hizmetler"
@@ -732,7 +749,7 @@ function HeroSection() {
                 border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              Tüm Hizmetler
+              {settings.heroSecondaryButton}
               <ArrowRight size={14} />
             </Link>
           </motion.div>
@@ -765,7 +782,7 @@ function HeroSection() {
             </div>
             <div>
               <div style={{ display: "flex", gap: "2px", marginBottom: "2px" }}>
-                {[1,2,3,4,5].map((s) => (
+                {[1, 2, 3, 4, 5].map((s) => (
                   <Star key={s} size={12} fill="#f59e0b" color="#f59e0b" />
                 ))}
               </div>
@@ -890,7 +907,7 @@ function StatsSection() {
 // ─────────────────────────────────────────────
 // QR Menu Feature Section
 // ─────────────────────────────────────────────
-function QRMenuSection() {
+function QRMenuSection({ settings }: { settings: SiteSettings }) {
   return (
     <section
       style={{ position: "relative", overflow: "hidden" }}
@@ -946,8 +963,7 @@ function QRMenuSection() {
                 wordBreak: "break-word",
               }}
             >
-              QR Menü Sistemi ile{" "}
-              <span className="gradient-text">Restoranınızı Dönüştürün</span>
+              {renderGradientText(settings.whyChooseUsTitle)}
             </h2>
             <p
               style={{
@@ -958,8 +974,7 @@ function QRMenuSection() {
                 lineHeight: 1.7,
               }}
             >
-              Masaya QR kodu koyun, müşterileriniz menüye anında ulaşsın. Baskı masrafı yok,
-              güncelleme zahmeti yok.
+              {settings.whyChooseUsText}
             </p>
           </motion.div>
         </AnimatedSection>
@@ -1110,7 +1125,16 @@ function QRMenuSection() {
 // ─────────────────────────────────────────────
 // Services Section
 // ─────────────────────────────────────────────
-function ServicesSection() {
+function ServicesSection({ settings }: { settings: SiteSettings }) {
+  const [services, setServices] = useState<DbService[]>([]);
+
+  useEffect(() => {
+    fetch("/api/services")
+      .then((r) => r.json())
+      .then((data) => setServices(data))
+      .catch(() => { });
+  }, []);
+
   return (
     <section style={{ position: "relative" }} className="py-16 sm:py-20 lg:py-28">
       <div
@@ -1168,91 +1192,96 @@ function ServicesSection() {
                 lineHeight: 1.7,
               }}
             >
-              Web'den mobilye, backend'den UI/UX tasarımına — uçtan uca dijital dönüşüm hizmetleri.
+              {settings.homepageIntro}
             </p>
           </motion.div>
         </AnimatedSection>
 
-        <AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {SERVICES.map((service, i) => (
-              <motion.div key={service.title} variants={fadeUp}>
-                <Link
-                  href={service.href}
-                  style={{ textDecoration: "none", display: "block" }}
-                >
-                  <div
-                    className="p-5 sm:p-7"
-                    style={{
-                      borderRadius: "16px",
-                      background: "rgba(17, 18, 25, 0.9)",
-                      border: "1px solid rgba(255,255,255,0.07)",
-                      height: "100%",
-                      transition: "all 0.3s ease",
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget;
-                      el.style.borderColor = "rgba(34,211,238,0.25)";
-                      el.style.background = "rgba(22, 26, 36, 0.95)";
-                      el.style.transform = "translateY(-3px)";
-                      el.style.boxShadow = "0 20px 40px rgba(0,0,0,0.3)";
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget;
-                      el.style.borderColor = "rgba(255,255,255,0.07)";
-                      el.style.background = "rgba(17, 18, 25, 0.9)";
-                      el.style.transform = "translateY(0)";
-                      el.style.boxShadow = "none";
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "44px",
-                        height: "44px",
-                        borderRadius: "11px",
-                        background: "rgba(6,182,212,0.1)",
-                        border: "1px solid rgba(6,182,212,0.2)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginBottom: "16px",
-                      }}
+        {services.length > 0 && (
+          <AnimatedSection>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {services.map((service) => {
+                const Icon = SERVICE_ICON_MAP[service.icon] ?? Code2;
+                return (
+                  <motion.div key={service.id} variants={fadeUp}>
+                    <Link
+                      href={`/hizmetler/${service.slug}`}
+                      style={{ textDecoration: "none", display: "block" }}
                     >
-                      <service.icon size={20} color="#22d3ee" />
-                    </div>
-                    <h3
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 700,
-                        color: "#f1f5f9",
-                        marginBottom: "8px",
-                        letterSpacing: "-0.3px",
-                      }}
-                    >
-                      {service.title}
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#64748b", lineHeight: 1.7, margin: "0 0 16px 0" }}>
-                      {service.description}
-                    </p>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        fontSize: "13px",
-                        color: "#22d3ee",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Detaylar <ChevronRight size={14} />
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </AnimatedSection>
+                      <div
+                        className="p-5 sm:p-7"
+                        style={{
+                          borderRadius: "16px",
+                          background: "rgba(17, 18, 25, 0.9)",
+                          border: "1px solid rgba(255,255,255,0.07)",
+                          height: "100%",
+                          transition: "all 0.3s ease",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget;
+                          el.style.borderColor = "rgba(34,211,238,0.25)";
+                          el.style.background = "rgba(22, 26, 36, 0.95)";
+                          el.style.transform = "translateY(-3px)";
+                          el.style.boxShadow = "0 20px 40px rgba(0,0,0,0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget;
+                          el.style.borderColor = "rgba(255,255,255,0.07)";
+                          el.style.background = "rgba(17, 18, 25, 0.9)";
+                          el.style.transform = "translateY(0)";
+                          el.style.boxShadow = "none";
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "44px",
+                            height: "44px",
+                            borderRadius: "11px",
+                            background: "rgba(6,182,212,0.1)",
+                            border: "1px solid rgba(6,182,212,0.2)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginBottom: "16px",
+                          }}
+                        >
+                          <Icon size={20} color="#22d3ee" />
+                        </div>
+                        <h3
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: 700,
+                            color: "#f1f5f9",
+                            marginBottom: "8px",
+                            letterSpacing: "-0.3px",
+                          }}
+                        >
+                          {service.title}
+                        </h3>
+                        <p style={{ fontSize: "14px", color: "#64748b", lineHeight: 1.7, margin: "0 0 16px 0" }}>
+                          {service.shortDescription}
+                        </p>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            fontSize: "13px",
+                            color: "#22d3ee",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Detaylar <ChevronRight size={14} />
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </AnimatedSection>
+        )}
       </div>
     </section>
   );
@@ -1326,7 +1355,7 @@ function TechSection() {
 // ─────────────────────────────────────────────
 // CTA Section
 // ─────────────────────────────────────────────
-function CTASection() {
+function CTASection({ settings }: { settings: SiteSettings }) {
   return (
     <section className="py-16 sm:py-20 lg:py-28">
       <div style={{ maxWidth: "1280px", margin: "0 auto" }} className="px-5 sm:px-6">
@@ -1400,8 +1429,7 @@ function CTASection() {
                   wordBreak: "break-word",
                 }}
               >
-                Dijital Dönüşümünüzü{" "}
-                <span className="gradient-text">Bugün Başlatın</span>
+                {renderGradientText(settings.homepageCTA)}
               </h2>
 
               <p
@@ -1471,7 +1499,7 @@ function BlogSection() {
     fetch("/api/blog")
       .then((r) => r.json())
       .then((data) => setPosts(data.slice(0, 3)))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
@@ -2051,16 +2079,29 @@ function Footer() {
 // Page
 // ─────────────────────────────────────────────
 export default function HomePage() {
+  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && typeof data === "object") {
+          setSettings((prev) => ({ ...prev, ...data }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div style={{ background: "#08090d", minHeight: "100vh", color: "#f1f5f9", overflowX: "hidden" }}>
       <Navbar />
-      <HeroSection />
+      <HeroSection settings={settings} />
       <BlogSection />
       <StatsSection />
-      <QRMenuSection />
-      <ServicesSection />
+      <QRMenuSection settings={settings} />
+      <ServicesSection settings={settings} />
       <TechSection />
-      <CTASection />
+      <CTASection settings={settings} />
       <Footer />
     </div>
   );
