@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FolderKanban, ArrowRight, Star } from "lucide-react";
@@ -59,16 +60,19 @@ export default async function ProjectsPage() {
                                 key={project.id}
                                 className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition hover:border-cyan-500/30 hover:bg-white/[0.05]"
                             >
-                                <div className="flex min-h-[220px] items-center justify-center border-b border-white/10 bg-gradient-to-br from-cyan-500/10 via-slate-900 to-violet-500/10">
+                                <div className="relative min-h-[220px] border-b border-white/10 bg-gradient-to-br from-cyan-500/10 via-slate-900 to-violet-500/10">
                                     {project.coverImage ? (
-                                        // şimdilik basit görüntü
-                                        <img
+                                        <Image
                                             src={project.coverImage}
                                             alt={project.title}
-                                            className="h-full w-full object-cover"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                                         />
                                     ) : (
-                                        <FolderKanban className="h-12 w-12 text-cyan-300" />
+                                        <div className="flex h-full w-full items-center justify-center">
+                                            <FolderKanban className="h-12 w-12 text-cyan-300" />
+                                        </div>
                                     )}
                                 </div>
 

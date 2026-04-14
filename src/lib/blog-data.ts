@@ -12,6 +12,7 @@ export interface BlogPost {
   accentColor: string;
   emoji: string;
   content: BlogSection[];
+  coverImage?: string | null;
 }
 
 export interface BlogSection {

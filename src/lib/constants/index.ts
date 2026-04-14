@@ -5,10 +5,8 @@ export const SITE_DESCRIPTION =
 
 export const NAV_LINKS = [
   { label: 'Ana Sayfa', href: '/' },
-  { label: 'Hakkımızda', href: '/hakkimizda' },
-  { label: 'Hizmetler', href: '/hizmetler' },
-  { label: 'Çözümler', href: '/cozumler' },
-  { label: 'Projeler', href: '/projeler' },
+  { label: 'Hizmetler', href: '/services' },
+  { label: 'Projeler', href: '/projects' },
   { label: 'Blog', href: '/blog' },
   { label: 'İletişim', href: '/iletisim' },
 ];

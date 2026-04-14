@@ -24,7 +24,7 @@ export default function ServiceCard({ title, shortDescription, icon, slug, class
 
   return (
     <Link
-      href={`/hizmetler/${slug}`}
+      href={`/services/${slug}`}
       className={cn(
         'group block bg-white rounded-xl border border-slate-100 p-6 hover:border-blue-200 hover:shadow-md transition-all duration-200',
         className

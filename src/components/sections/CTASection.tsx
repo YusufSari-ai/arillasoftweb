@@ -15,7 +15,7 @@ export default function CTASection({
   title = 'Projenizi Hayata Geçirmeye Hazır Mısınız?',
   description = 'Fikrinizi bizimle paylaşın, size özel çözüm sunalım. Ücretsiz keşif görüşmesi için bugün iletişime geçin.',
   primaryLabel = 'Ücretsiz Teklif Al',
-  primaryHref = '/teklif-al',
+  primaryHref = '/iletisim',
   secondaryLabel = 'Bizimle İletişime Geçin',
   secondaryHref = '/iletisim',
 }: CTASectionProps) {

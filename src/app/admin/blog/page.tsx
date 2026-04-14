@@ -1,5 +1,6 @@
 "use client";
 
+import CloudinaryUpload from "@/components/admin/CloudinaryUpload";
 import { useState, useEffect, useTransition } from "react";
 import {
   Plus,
@@ -104,7 +105,6 @@ function PostModal({
 }) {
   const [draft, setDraft] = useState<PostDraft>(initial);
   const [slugEdited, setSlugEdited] = useState(mode === "edit");
-  const [imgError, setImgError] = useState(false);
   const [errors, setErrors] = useState<{ title?: string; description?: string; slug?: string }>({});
 
   const inputStyle: React.CSSProperties = {
@@ -139,12 +139,12 @@ function PostModal({
 
   const set =
     (key: keyof PostDraft) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-      setDraft((prev) => ({ ...prev, [key]: e.target.value }));
-      if (key === "description" && errors.description)
-        setErrors((prev) => ({ ...prev, description: undefined }));
-      if (key === "coverImage") setImgError(false);
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setDraft((prev) => ({ ...prev, [key]: e.target.value }));
+        if (key === "description" && errors.description) {
+          setErrors((prev) => ({ ...prev, description: undefined }));
+        }
+      };
 
   function validate(): boolean {
     const next: typeof errors = {};
@@ -156,8 +156,6 @@ function PostModal({
   }
 
   const selectedCat = CATEGORY_OPTIONS.find((c) => c.label === draft.category);
-  const showImgPreview =
-    !!draft.coverImage && draft.coverImage.startsWith("http") && !imgError;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
@@ -255,27 +253,14 @@ function PostModal({
           {/* Cover Image */}
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "#64748b" }}>
-              Kapak Görseli URL
+              Kapak Görseli
             </label>
-            <input
+            <CloudinaryUpload
               value={draft.coverImage}
-              onChange={set("coverImage")}
-              placeholder="https://..."
-              style={inputStyle}
+              onChange={(url) => {
+                setDraft((prev) => ({ ...prev, coverImage: url }));
+              }}
             />
-            {showImgPreview && (
-              <div
-                className="mt-2 rounded-lg overflow-hidden"
-                style={{ border: "1px solid rgba(255,255,255,0.08)" }}
-              >
-                <img
-                  src={draft.coverImage}
-                  alt="Kapak önizleme"
-                  onError={() => setImgError(true)}
-                  style={{ width: "100%", height: 120, objectFit: "cover", display: "block" }}
-                />
-              </div>
-            )}
           </div>
 
           {/* Category + Read time */}
@@ -434,6 +419,15 @@ function DeleteDialog({
 /* ─── Main Page ──────────────────────────────── */
 export default function AdminBlogPage() {
   const [posts, setPosts] = useState<PostDisplay[]>([]);
+  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  useEffect(() => {
+    if (toast) {
+      const t = setTimeout(() => setToast(null), 2500);
+      return () => clearTimeout(t);
+    }
+  }, [toast]);
+
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [filterCat, setFilterCat] = useState("Tümü");
@@ -476,23 +470,36 @@ export default function AdminBlogPage() {
 
   function handleSave(draft: PostDraft) {
     startTransition(async () => {
-      if (modalMode === "new") {
-        await createPost(draft);
-      } else if (modalMode === "edit" && editTarget) {
-        await updatePost(editTarget.id, draft);
+      try {
+        if (modalMode === "new") {
+          await createPost(draft);
+          setToast({ type: "success", message: "Blog yazısı oluşturuldu" });
+        } else if (modalMode === "edit" && editTarget) {
+          await updatePost(editTarget.id, draft);
+          setToast({ type: "success", message: "Blog yazısı güncellendi" });
+        }
+
+        await loadPosts();
+        setModalMode(null);
+        setEditTarget(null);
+      } catch {
+        setToast({ type: "error", message: "Bir hata oluştu" });
       }
-      await loadPosts();
-      setModalMode(null);
-      setEditTarget(null);
     });
   }
 
   function handleDelete() {
     if (!deleteTarget) return;
+
     startTransition(async () => {
-      await deletePost(deleteTarget.id);
-      await loadPosts();
-      setDeleteTarget(null);
+      try {
+        await deletePost(deleteTarget.id);
+        setToast({ type: "success", message: "Blog yazısı silindi" });
+        await loadPosts();
+        setDeleteTarget(null);
+      } catch {
+        setToast({ type: "error", message: "Silme işlemi başarısız" });
+      }
     });
   }
 
@@ -509,19 +516,38 @@ export default function AdminBlogPage() {
 
   const editDraft: PostDraft = editTarget
     ? {
-        title: editTarget.title,
-        slug: editTarget.slug,
-        description: editTarget.description,
-        category: editTarget.category,
-        readTime: editTarget.readTime,
-        emoji: editTarget.emoji,
-        published: editTarget.published,
-        coverImage: editTarget.coverImage ?? "",
-      }
+      title: editTarget.title,
+      slug: editTarget.slug,
+      description: editTarget.description,
+      category: editTarget.category,
+      readTime: editTarget.readTime,
+      emoji: editTarget.emoji,
+      published: editTarget.published,
+      coverImage: editTarget.coverImage ?? "",
+    }
     : defaultDraft;
 
   return (
     <div className="p-6 space-y-6">
+      {toast && (
+        <div
+          className="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium shadow-lg z-50"
+          style={{
+            background:
+              toast.type === "success"
+                ? "rgba(16,185,129,0.15)"
+                : "rgba(239,68,68,0.15)",
+            color: toast.type === "success" ? "#34d399" : "#f87171",
+            border:
+              toast.type === "success"
+                ? "1px solid rgba(16,185,129,0.3)"
+                : "1px solid rgba(239,68,68,0.3)",
+          }}
+        >
+          {toast.message}
+        </div>
+      )}
+
       {modalMode && (
         <PostModal
           mode={modalMode}
@@ -604,15 +630,15 @@ export default function AdminBlogPage() {
               style={
                 filterCat === cat
                   ? {
-                      background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(6,182,212,0.15))",
-                      color: "#a78bfa",
-                      border: "1px solid rgba(124,58,237,0.3)",
-                    }
+                    background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(6,182,212,0.15))",
+                    color: "#a78bfa",
+                    border: "1px solid rgba(124,58,237,0.3)",
+                  }
                   : {
-                      background: "rgba(255,255,255,0.03)",
-                      color: "#64748b",
-                      border: "1px solid rgba(255,255,255,0.06)",
-                    }
+                    background: "rgba(255,255,255,0.03)",
+                    color: "#64748b",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }
               }
             >
               {cat}

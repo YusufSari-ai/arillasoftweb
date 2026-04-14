@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
@@ -82,52 +83,65 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
           }}
         >
-          {/* Cover image — gradient illustration */}
+          {/* Cover image */}
           <div
             style={{
               position: "relative",
               height: "190px",
-              background: post.gradient,
               overflow: "hidden",
               flexShrink: 0,
+              background: post.gradient,
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                top: "-30px",
-                right: "-30px",
-                width: "160px",
-                height: "160px",
-                borderRadius: "50%",
-                background: `radial-gradient(circle, ${post.accentColor}22 0%, transparent 70%)`,
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                bottom: "-20px",
-                left: "-20px",
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
-                background: `radial-gradient(circle, ${post.accentColor}15 0%, transparent 70%)`,
-              }}
-            />
-            <div className="grid-bg" style={{ position: "absolute", inset: 0, opacity: 0.4 }} />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "56px",
-                filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.4))",
-              }}
-            >
-              {post.emoji}
-            </div>
+            {post.coverImage ? (
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            ) : (
+              <>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "-30px",
+                    right: "-30px",
+                    width: "160px",
+                    height: "160px",
+                    borderRadius: "50%",
+                    background: `radial-gradient(circle, ${post.accentColor}22 0%, transparent 70%)`,
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "-20px",
+                    left: "-20px",
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "50%",
+                    background: `radial-gradient(circle, ${post.accentColor}15 0%, transparent 70%)`,
+                  }}
+                />
+                <div className="grid-bg" style={{ position: "absolute", inset: 0, opacity: 0.4 }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "56px",
+                    filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.4))",
+                  }}
+                >
+                  {post.emoji}
+                </div>
+              </>
+            )}
+
             <div
               style={{
                 position: "absolute",
@@ -145,6 +159,7 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
                 border: `1px solid ${post.categoryBorder}`,
                 backdropFilter: "blur(8px)",
                 letterSpacing: "0.04em",
+                zIndex: 2,
               }}
             >
               {post.category}

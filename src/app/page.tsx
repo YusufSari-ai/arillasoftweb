@@ -50,8 +50,7 @@ import {
 const NAV_LINKS = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Hakkımızda", href: "/hakkimizda" },
-  { label: "Hizmetler", href: "/hizmetler" },
-  { label: "Çözümler", href: "/cozumler" },
+  { label: "Hizmetler", href: "/services" },
   { label: "Projeler", href: "/projects" },
   { label: "Blog", href: "/blog" },
   { label: "İletişim", href: "/iletisim" },
@@ -306,7 +305,7 @@ function Navbar() {
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="/teklif-al"
+              href="/iletisim"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -382,7 +381,7 @@ function Navbar() {
               </Link>
             ))}
             <Link
-              href="/teklif-al"
+              href="/iletisim"
               onClick={() => setIsOpen(false)}
               style={{
                 marginTop: "8px",
@@ -724,7 +723,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
           {/* CTAs */}
           <motion.div variants={fadeUp} className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
             <Link
-              href="/cozumler/qr-menu"
+              href="/services"
               className="inline-flex items-center gap-2 rounded-xl font-bold text-white transition-all"
               style={{
                 padding: "11px 22px",
@@ -738,7 +737,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
               {settings.heroPrimaryButton}
             </Link>
             <Link
-              href="/hizmetler"
+              href="/services"
               className="inline-flex items-center gap-2 rounded-xl font-semibold transition-all"
               style={{
                 padding: "11px 22px",
@@ -1073,7 +1072,7 @@ function QRMenuSection({ settings }: { settings: SiteSettings }) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", flexShrink: 0 }}>
                 <Link
-                  href="/cozumler/qr-menu"
+                  href="/services"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -1093,7 +1092,7 @@ function QRMenuSection({ settings }: { settings: SiteSettings }) {
                   Hemen Başlayın
                 </Link>
                 <Link
-                  href="/teklif-al"
+                  href="/iletisim"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -1205,7 +1204,7 @@ function ServicesSection({ settings }: { settings: SiteSettings }) {
                 return (
                   <motion.div key={service.id} variants={fadeUp}>
                     <Link
-                      href={`/hizmetler/${service.slug}`}
+                      href={`/services/${service.slug}`}
                       style={{ textDecoration: "none", display: "block" }}
                     >
                       <div
@@ -1446,7 +1445,7 @@ function CTASection({ settings }: { settings: SiteSettings }) {
 
               <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
                 <Link
-                  href="/teklif-al"
+                  href="/iletisim"
                   className="inline-flex items-center gap-2 rounded-xl font-bold text-white transition-all"
                   style={{
                     padding: "12px 24px",
@@ -1955,11 +1954,11 @@ function Footer() {
             </h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
               {[
-                { label: "Web Geliştirme", href: "/hizmetler/web-uygulama-gelistirme" },
-                { label: "Mobil Uygulama", href: "/hizmetler/mobil-uygulama-gelistirme" },
-                { label: "QR Menü Sistemi", href: "/cozumler/qr-menu" },
-                { label: "UI/UX Tasarımı", href: "/hizmetler/ui-ux-tasarimi" },
-                { label: "Backend & API", href: "/hizmetler/backend-ve-api-gelistirme" },
+                { label: "Web Geliştirme", href: "/services/web-uygulama-gelistirme" },
+                { label: "Mobil Uygulama", href: "/services/mobil-uygulama-gelistirme" },
+                { label: "QR Menü Sistemi", href: "/services/qr-menu" },
+                { label: "UI/UX Tasarımı", href: "/services/ui-ux-tasarimi" },
+                { label: "Backend & API", href: "/services/backend-ve-api-gelistirme" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -1982,8 +1981,8 @@ function Footer() {
             </h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
               {[
-                { label: "Hakkımızda", href: "/hakkimizda" },
-                { label: "Projeler", href: "/projeler" },
+                { label: "Hakkımızda", href: "/" },
+                { label: "Projeler", href: "/projects" },
                 { label: "Blog", href: "/blog" },
                 { label: "Kariyer", href: "/kariyer" },
                 { label: "İletişim", href: "/iletisim" },
@@ -2089,7 +2088,7 @@ export default function HomePage() {
           setSettings((prev) => ({ ...prev, ...data }));
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (

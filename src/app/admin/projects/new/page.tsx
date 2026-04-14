@@ -30,6 +30,7 @@ export default function NewProjectPage() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [toast, setToast] = useState<string | null>(null);
 
     function updateField(
         field: string,
@@ -67,8 +68,11 @@ export default function NewProjectPage() {
                 published: form.published,
             });
 
-            router.push("/admin/projects");
-            router.refresh();
+            setToast("Proje başarıyla oluşturuldu");
+            setTimeout(() => {
+                router.push("/admin/projects");
+                router.refresh();
+            }, 800);
         } catch (err) {
             console.error(err);
             setError("Proje eklenirken bir hata oluştu.");
@@ -79,6 +83,18 @@ export default function NewProjectPage() {
 
     return (
         <div className="min-h-screen bg-[#08090d] px-6 py-8 text-slate-100">
+            {toast && (
+                <div
+                    className="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-medium shadow-lg z-50"
+                    style={{
+                        background: "rgba(16,185,129,0.15)",
+                        color: "#34d399",
+                        border: "1px solid rgba(16,185,129,0.3)",
+                    }}
+                >
+                    {toast}
+                </div>
+            )}
             <div className="mx-auto max-w-4xl">
                 <div className="mb-8 flex items-center justify-between">
                     <div>

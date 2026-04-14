@@ -55,6 +55,7 @@ type DbPost = {
   readingTime: number;
   publishedAt: Date | null;
   createdAt: Date;
+  coverImage: string | null;
   category: { name: string } | null;
 };
 
@@ -82,6 +83,7 @@ export function dbPostToUiPost(post: DbPost): BlogPost {
     gradient: meta.gradient,
     accentColor: meta.accentColor,
     emoji: contentData.emoji ?? "📝",
+    coverImage: post.coverImage,
     content: contentData.sections ?? [{ type: "paragraph", text: post.excerpt }],
   };
 }

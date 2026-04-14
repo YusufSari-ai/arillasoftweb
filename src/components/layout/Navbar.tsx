@@ -83,7 +83,7 @@ export default function Navbar() {
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="/teklif-al"
+              href="/iletisim"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -154,7 +154,7 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="/teklif-al"
+              href="/iletisim"
               style={{
                 marginTop: '8px',
                 padding: '11px 20px',

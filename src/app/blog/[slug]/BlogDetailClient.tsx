@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
@@ -332,45 +333,66 @@ export default function BlogDetailClient({
             overflow: "hidden",
           }}
         >
-          <div className="grid-bg" style={{ position: "absolute", inset: 0, opacity: 0.5 }} />
+          {post.coverImage ? (
+            <Image
+              src={post.coverImage}
+              alt={post.title}
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+          ) : (
+            <>
+              <div className="grid-bg" style={{ position: "absolute", inset: 0, opacity: 0.5 }} />
 
-          <div
-            style={{
-              position: "absolute",
-              top: "-80px",
-              right: "-80px",
-              width: "400px",
-              height: "400px",
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${post.accentColor}28 0%, transparent 65%)`,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-60px",
-              left: "-60px",
-              width: "300px",
-              height: "300px",
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${post.accentColor}18 0%, transparent 65%)`,
-            }}
-          />
+              <div
+                style={{
+                  position: "absolute",
+                  top: "-80px",
+                  right: "-80px",
+                  width: "400px",
+                  height: "400px",
+                  borderRadius: "50%",
+                  background: `radial-gradient(circle, ${post.accentColor}28 0%, transparent 65%)`,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-60px",
+                  left: "-60px",
+                  width: "300px",
+                  height: "300px",
+                  borderRadius: "50%",
+                  background: `radial-gradient(circle, ${post.accentColor}18 0%, transparent 65%)`,
+                }}
+              />
+
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "clamp(80px, 14vw, 130px)",
+                  filter: "drop-shadow(0 12px 40px rgba(0,0,0,0.5))",
+                  userSelect: "none",
+                }}
+              >
+                {post.emoji}
+              </div>
+            </>
+          )}
 
           <div
             style={{
               position: "absolute",
               inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "clamp(80px, 14vw, 130px)",
-              filter: "drop-shadow(0 12px 40px rgba(0,0,0,0.5))",
-              userSelect: "none",
+              background: "linear-gradient(to bottom, rgba(8,9,13,0.12), rgba(8,9,13,0.45))",
             }}
-          >
-            {post.emoji}
-          </div>
+          />
 
           <div
             style={{

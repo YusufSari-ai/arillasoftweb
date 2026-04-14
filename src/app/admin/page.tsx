@@ -1,5 +1,5 @@
 "use client";
-
+import AdminLogoutButton from "@/components/admin/AdminLogoutButton";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -38,7 +38,7 @@ function adaptPost(post: AdminPost): PostDisplay {
   const catName = post.category?.name ?? "Genel";
   const meta = CATEGORY_META[catName] ?? CATEGORY_META["Genel"];
   let emoji = "📝";
-  try { emoji = JSON.parse(post.content).emoji ?? "📝"; } catch {}
+  try { emoji = JSON.parse(post.content).emoji ?? "📝"; } catch { }
   return {
     slug: post.slug,
     emoji,
@@ -90,18 +90,27 @@ export default function AdminDashboard() {
   const [posts, setPosts] = useState<PostDisplay[]>([]);
   const [stats, setStats] = useState<DashboardStats>(DEFAULT_STATS);
   const [recentMessages, setRecentMessages] = useState<RecentMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    getAdminPosts()
-      .then((data) => setPosts(data.map(adaptPost)))
-      .catch(() => {});
+    const fetchData = async () => {
+      try {
 
-    getDashboardData()
-      .then(({ stats: s, recentMessages: msgs }) => {
-        setStats(s);
-        setRecentMessages(msgs);
-      })
-      .catch(() => {});
+        const postsData = await getAdminPosts();
+        const dashboardData = await getDashboardData();
+
+        setPosts(postsData.map(adaptPost));
+        setStats(dashboardData.stats);
+        setRecentMessages(dashboardData.recentMessages);
+      } catch (err) {
+        setError("Veriler yüklenirken bir hata oluştu.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const recentPosts = posts.slice(0, 4);
@@ -141,16 +150,37 @@ export default function AdminDashboard() {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="p-6 text-center text-gray-400">
+        Yükleniyor...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 text-center text-red-400">
+        {error}
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-8">
+
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold" style={{ color: "#f1f5f9" }}>
-          Dashboard
-        </h1>
-        <p className="text-sm mt-1" style={{ color: "#64748b" }}>
-          Hoş geldiniz. İçeriklerinizi buradan yönetin.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: "#f1f5f9" }}>
+            Dashboard
+          </h1>
+          <p className="text-sm mt-1" style={{ color: "#64748b" }}>
+            Hoş geldiniz. İçeriklerinizi buradan yönetin.
+          </p>
+        </div>
+
+        <AdminLogoutButton />
       </div>
 
       {/* Stats Grid */}

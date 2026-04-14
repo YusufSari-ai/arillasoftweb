@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -78,10 +79,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             {/* ── Hero ─────────────────────────────────────────────────────── */}
             <div className="relative min-h-[260px] w-full overflow-hidden md:min-h-[380px] lg:min-h-[460px]">
                 {project.coverImage ? (
-                    <img
+                    <Image
                         src={project.coverImage}
                         alt={project.title}
-                        className="absolute inset-0 h-full w-full object-cover"
+                        fill
+                        priority
+                        className="object-cover"
+                        sizes="100vw"
                     />
                 ) : (
                     /* Dot-grid fallback */

@@ -16,6 +16,8 @@ export default function CloudinaryUpload({ value, onChange }: Props) {
     const [uploadError, setUploadError] = useState("");
 
     async function uploadFile(file: File) {
+        console.log("UPLOAD BASLADI");
+
         if (!file.type.startsWith("image/")) {
             setUploadError("Lütfen bir görsel dosyası seçin.");
             return;
@@ -40,7 +42,9 @@ export default function CloudinaryUpload({ value, onChange }: Props) {
             if (!res.ok) throw new Error("Yükleme başarısız.");
 
             const data = await res.json();
+            console.log("CLOUDINARY URL:", data.secure_url);
             onChange(data.secure_url);
+
         } catch {
             setUploadError("Görsel yüklenirken bir hata oluştu.");
         } finally {

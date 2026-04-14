@@ -85,12 +85,12 @@ export default function Footer() {
             </h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                { label: 'Web Uygulama Geliştirme', href: '/hizmetler/web-uygulama-gelistirme' },
-                { label: 'Mobil Uygulama', href: '/hizmetler/mobil-uygulama-gelistirme' },
-                { label: 'QR Menü Sistemi', href: '/cozumler/qr-menu' },
-                { label: 'UI/UX Tasarımı', href: '/hizmetler/ui-ux-tasarimi' },
-                { label: 'Backend & API', href: '/hizmetler/backend-ve-api-gelistirme' },
-                { label: 'Bakım & Destek', href: '/hizmetler/bakim-ve-teknik-destek' },
+                { label: 'Web Uygulama Geliştirme', href: '/services' },
+                { label: 'Mobil Uygulama', href: '/services' },
+                { label: 'QR Menü Sistemi', href: '/services' },
+                { label: 'UI/UX Tasarımı', href: '/services' },
+                { label: 'Backend & API', href: '/services' },
+                { label: 'Bakım & Destek', href: '/services' },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -111,11 +111,11 @@ export default function Footer() {
             </h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                { label: 'Hakkımızda', href: '/hakkimizda' },
-                { label: 'Projeler', href: '/projeler' },
+                { label: 'Hakkımızda', href: '/' },
+                { label: 'Projeler', href: '/projects' },
                 { label: 'Blog', href: '/blog' },
-                { label: 'Kariyer', href: '/kariyer' },
-                { label: 'Sık Sorulan Sorular', href: '/sss' },
+                { label: 'Kariyer', href: '/iletisim' },
+                { label: 'Sık Sorulan Sorular', href: '/iletisim' },
                 { label: 'İletişim', href: '/iletisim' },
               ].map((item) => (
                 <li key={item.href}>
@@ -158,7 +158,7 @@ export default function Footer() {
             </ul>
             <div style={{ marginTop: '20px' }}>
               <Link
-                href="/teklif-al"
+                href="/iletisim"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -197,10 +197,10 @@ export default function Footer() {
             © {currentYear} Arillasoft. Tüm hakları saklıdır.
           </p>
           <div style={{ display: 'flex', gap: '20px' }}>
-            <Link href="/gizlilik-politikasi" style={{ fontSize: '13px', color: '#334155', textDecoration: 'none' }}>
+            <Link href="/" style={{ fontSize: '13px', color: '#334155', textDecoration: 'none' }}>
               Gizlilik Politikası
             </Link>
-            <Link href="/kullanim-kosullari" style={{ fontSize: '13px', color: '#334155', textDecoration: 'none' }}>
+            <Link href="/" style={{ fontSize: '13px', color: '#334155', textDecoration: 'none' }}>
               Kullanım Koşulları
             </Link>
           </div>

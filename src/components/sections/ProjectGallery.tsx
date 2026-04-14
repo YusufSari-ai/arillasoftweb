@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 
@@ -82,11 +83,13 @@ export default function ProjectGallery({ images, projectTitle }: ProjectGalleryP
                         className="group relative h-72 cursor-zoom-in md:h-96"
                         onClick={() => setLightbox(current)}
                     >
-                        <img
+                        <Image
                             key={current}
                             src={images[current]}
                             alt={`${projectTitle} görsel ${current + 1}`}
-                            className="h-full w-full object-cover transition-opacity duration-300"
+                            fill
+                            className="object-cover transition-opacity duration-300"
+                            sizes="(max-width: 768px) 100vw, 80vw"
                         />
                         {/* zoom hint */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
@@ -129,16 +132,18 @@ export default function ProjectGallery({ images, projectTitle }: ProjectGalleryP
                                 key={`${img}-${i}`}
                                 onClick={() => setCurrent(i)}
                                 aria-label={`Görsel ${i + 1}`}
-                                className={`h-16 w-24 shrink-0 overflow-hidden rounded-xl border transition ${
-                                    i === current
-                                        ? "border-cyan-400 ring-2 ring-cyan-400/40"
-                                        : "border-white/10 opacity-60 hover:opacity-100"
-                                }`}
+                                className={`h-16 w-24 shrink-0 overflow-hidden rounded-xl border transition ${i === current
+                                    ? "border-cyan-400 ring-2 ring-cyan-400/40"
+                                    : "border-white/10 opacity-60 hover:opacity-100"
+                                    }`}
                             >
-                                <img
+                                <Image
                                     src={img}
                                     alt={`${projectTitle} küçük görsel ${i + 1}`}
+                                    width={120}
+                                    height={80}
                                     className="h-full w-full object-cover"
+                                    sizes="120px"
                                 />
                             </button>
                         ))}
@@ -186,12 +191,15 @@ export default function ProjectGallery({ images, projectTitle }: ProjectGalleryP
                     )}
 
                     {/* Image */}
-                    <img
+                    <Image
                         key={lightbox}
                         src={images[lightbox]}
                         alt={`${projectTitle} görsel ${lightbox + 1}`}
+                        width={1200}
+                        height={800}
                         className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
+                        sizes="90vw"
                     />
 
                     {/* Next arrow */}
