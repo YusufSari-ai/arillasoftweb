@@ -6,22 +6,22 @@ import type { LucideProps } from "lucide-react";
 import { SITE_NAME, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Hizmetler",
-  description:
-    "Web geliştirme, mobil uygulama, UI/UX tasarımı ve daha fazlası — uçtan uca yazılım çözümleri.",
-  openGraph: {
-    title: `Hizmetler | ${SITE_NAME}`,
+    title: "Hizmetler",
     description:
-      "Web geliştirme, mobil uygulama, UI/UX tasarımı ve daha fazlası — uçtan uca yazılım çözümleri.",
-    url: `${SITE_URL}/services`,
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `Hizmetler | ${SITE_NAME}`,
-    description:
-      "Web geliştirme, mobil uygulama, UI/UX tasarımı ve daha fazlası — uçtan uca yazılım çözümleri.",
-  },
+        "Web geliştirme, mobil uygulama, UI/UX tasarımı ve daha fazlası — uçtan uca yazılım çözümleri.",
+    openGraph: {
+        title: `Hizmetler | ${SITE_NAME}`,
+        description:
+            "Web geliştirme, mobil uygulama, UI/UX tasarımı ve daha fazlası — uçtan uca yazılım çözümleri.",
+        url: `${SITE_URL}/services`,
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: `Hizmetler | ${SITE_NAME}`,
+        description:
+            "Web geliştirme, mobil uygulama, UI/UX tasarımı ve daha fazlası — uçtan uca yazılım çözümleri.",
+    },
 };
 
 type IconComponent = React.ComponentType<LucideProps>;
@@ -43,19 +43,19 @@ export default async function ServicesPage() {
     const services = await getPublishedServicesForPublic();
 
     return (
-        <main className="min-h-screen bg-[#08090d] px-6 py-20 text-slate-100">
+        <main className="min-h-screen bg-[#08090d] px-5 pt-28 pb-16 text-slate-100 sm:px-6 sm:pt-32 sm:pb-20">
             <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="mb-12">
+                <div className="mb-10 sm:mb-12">
                     <p className="mb-3 inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1 text-sm text-cyan-300">
                         Hizmetlerimiz
                     </p>
                     <h1 className="text-4xl font-bold tracking-tight text-white md:text-5xl">
-                        Neler Yapıyoruz?
+                        İşletmeniz İçin Dijital Çözümler
                     </h1>
                     <p className="mt-4 max-w-2xl text-base text-slate-400 md:text-lg">
-                        Dijital dönüşüm yolculuğunuzda yanınızdayız. Yazılımdan tasarıma,
-                        mobil uygulamalardan altyapıya kadar uçtan uca hizmet sunuyoruz.
+                        İşletmenizin ihtiyaçlarına özel web, mobil ve yazılım çözümleri geliştiriyoruz.
+                        Süreçlerinizi hızlandıran ve büyümenizi destekleyen sistemler kuruyoruz.
                     </p>
                 </div>
 
@@ -71,13 +71,13 @@ export default async function ServicesPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {services.map((service) => {
                             const Icon = ICON_MAP[service.icon] ?? Wrench;
                             return (
                                 <article
                                     key={service.id}
-                                    className="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition hover:border-cyan-500/30 hover:bg-white/[0.05]"
+                                    className="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:bg-white/[0.05] hover:shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
                                 >
                                     {/* Icon banner */}
                                     <div className="flex min-h-[140px] items-center justify-center border-b border-white/10 bg-gradient-to-br from-cyan-500/10 via-slate-900 to-violet-500/10">
@@ -100,9 +100,20 @@ export default async function ServicesPage() {
                                             <h2 className="text-xl font-semibold text-white">
                                                 {service.title}
                                             </h2>
-                                            <p className="mt-2 line-clamp-3 text-sm text-slate-400">
-                                                {service.shortDescription}
-                                            </p>
+                                            <div className="mt-3 space-y-3">
+                                                <p className="line-clamp-3 text-sm leading-7 text-slate-400">
+                                                    {service.shortDescription}
+                                                </p>
+
+                                                <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/5 px-4 py-3">
+                                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/90">
+                                                        Sağladığı Değer
+                                                    </p>
+                                                    <p className="mt-2 text-sm text-slate-300">
+                                                        İş süreçlerinizi hızlandırır, verimliliği artırır ve maliyetleri düşürür.
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         {/* Link */}
@@ -110,7 +121,7 @@ export default async function ServicesPage() {
                                             href={`/services/${service.slug}`}
                                             className="inline-flex items-center gap-2 text-sm font-medium text-cyan-300 transition hover:text-cyan-200"
                                         >
-                                            Detayları İncele
+                                            Hizmeti İncele
                                             <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                                         </Link>
                                     </div>

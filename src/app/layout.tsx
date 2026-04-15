@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants';
 import { prisma } from '@/lib/prisma';
+import Navbar from "@/components/Navbar";
+import PageTransition from "@/components/PageTransition";
 
 export async function generateMetadata(): Promise<Metadata> {
   let faviconHref = '/favicon.ico';
@@ -52,10 +54,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="tr" className="h-full antialiased">
-      <body className="min-h-full">{children}</body>
+    <html lang="tr">
+      <body>
+        <Navbar />
+        <PageTransition>{children}</PageTransition>
+      </body>
     </html>
   );
 }

@@ -348,7 +348,7 @@ export default function BlogClient({ posts }: { posts: BlogPost[] }) {
                 margin: 0,
               }}
             >
-              Tüm yazılarımız
+              Yazılım, teknoloji ve dijital dönüşüm dünyasındaki gelişmeleri; işletmelere etkileriyle birlikte paylaşıyoruz.
             </motion.p>
           </AnimatedSection>
         </section>

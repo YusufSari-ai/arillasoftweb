@@ -259,6 +259,16 @@ function RelatedCard({ post }: { post: BlogPost }) {
             >
               {post.title}
             </h4>
+
+            <p
+              style={{
+                fontSize: "14px",
+                color: "#64748b",
+                marginTop: "6px",
+              }}
+            >
+              Yazılım & teknoloji kategorisinde bilgilendirici içerik
+            </p>
             <span
               style={{
                 fontSize: "12px",
@@ -287,7 +297,17 @@ export default function BlogDetailClient({
 }: {
   post: BlogPost;
   related: BlogPost[];
+
 }) {
+  const firstParagraph =
+    post.content.find(
+      (section) => section.type === "paragraph" && section.text
+    )?.text?.trim() ?? "";
+
+  const remainingContent = post.content.filter((section) => {
+    if (section.type !== "paragraph") return true;
+    return (section.text?.trim() ?? "") !== firstParagraph;
+  });
   return (
     <main
       style={{
@@ -514,9 +534,10 @@ export default function BlogDetailClient({
               />
               <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                 <Clock size={13} />
-                {post.readTime} okuma
+                {post.readTime} dk okuma
               </span>
             </motion.div>
+
 
             <motion.div
               variants={fadeUp}
@@ -532,15 +553,15 @@ export default function BlogDetailClient({
               <p
                 style={{
                   fontSize: "17px",
-                  color: "#94a3b8",
+                  color: "#cbd5f5",
                   lineHeight: 1.8,
                   margin: 0,
-                  fontStyle: "italic",
                 }}
               >
-                {post.description}
+                {firstParagraph}
               </p>
             </motion.div>
+
           </AnimatedSection>
 
           <div
@@ -552,7 +573,7 @@ export default function BlogDetailClient({
 
           {/* ── Article content ── */}
           <AnimatedSection variants={stagger}>
-            {post.content.map((section, i) => (
+            {remainingContent.map((section, i) => (
               <motion.div key={i} variants={fadeUp}>
                 <ContentBlock section={section} accentColor={post.accentColor} />
               </motion.div>
@@ -603,7 +624,7 @@ export default function BlogDetailClient({
               }}
             >
               <ArrowLeft size={16} />
-              Tüm Yazılara Dön
+              Blog’a Geri Dön
             </Link>
           </motion.div>
         </div>
@@ -650,7 +671,7 @@ export default function BlogDetailClient({
                       margin: 0,
                     }}
                   >
-                    Bunları da okumak isteyebilirsiniz
+                    İlginizi Çekebilecek Diğer Yazılar
                   </h2>
                 </motion.div>
 

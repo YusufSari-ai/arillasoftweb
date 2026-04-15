@@ -1,7 +1,10 @@
 "use client";
 
+import AnimatedBrand from "@/components/AnimatedBrand";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import HomeBlogPreview from "@/components/HomeBlogPreview";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   QrCode,
@@ -220,187 +223,6 @@ function renderGradientText(text: string) {
       <span className="gradient-text">{parts[1]}</span>
       {parts[2] ?? ""}
     </>
-  );
-}
-
-// ─────────────────────────────────────────────
-// Navbar
-// ─────────────────────────────────────────────
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <header
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        transition: "all 0.3s ease",
-        background: scrolled ? "rgba(8, 9, 13, 0.92)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.07)" : "1px solid transparent",
-      }}
-    >
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "68px" }}>
-          {/* Logo */}
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 0 20px rgba(124,58,237,0.4)",
-              }}
-            >
-              <Code2 size={18} color="white" />
-            </div>
-            <span style={{ fontWeight: 700, fontSize: "18px", color: "#f1f5f9", letterSpacing: "-0.3px" }}>
-              Arilla<span style={{ color: "#8b5cf6" }}>soft</span>
-            </span>
-          </Link>
-
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.slice(0, 6).map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color: "#94a3b8",
-                  textDecoration: "none",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "#f1f5f9";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "#94a3b8";
-                  e.currentTarget.style.background = "transparent";
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            <Link
-              href="/iletisim"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "9px 20px",
-                borderRadius: "10px",
-                fontSize: "14px",
-                fontWeight: 600,
-                textDecoration: "none",
-                color: "white",
-                background: "linear-gradient(135deg, #7c3aed, #5b21b6)",
-                boxShadow: "0 0 20px rgba(124,58,237,0.3)",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 30px rgba(124,58,237,0.5)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 20px rgba(124,58,237,0.3)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              Teklif Al <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          {/* Mobile toggle */}
-          <button
-            className="lg:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-            style={{
-              background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: "8px",
-              padding: "8px",
-              color: "#f1f5f9",
-              cursor: "pointer",
-            }}
-          >
-            {isOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {isOpen && (
-        <div
-          style={{
-            background: "rgba(8, 9, 13, 0.98)",
-            borderTop: "1px solid rgba(255,255,255,0.07)",
-            backdropFilter: "blur(16px)",
-          }}
-          className="lg:hidden"
-        >
-          <nav style={{ padding: "16px 24px", display: "flex", flexDirection: "column", gap: "4px" }}>
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                style={{
-                  padding: "10px 14px",
-                  borderRadius: "8px",
-                  fontSize: "15px",
-                  fontWeight: 500,
-                  color: "#94a3b8",
-                  textDecoration: "none",
-                  transition: "all 0.2s",
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/iletisim"
-              onClick={() => setIsOpen(false)}
-              style={{
-                marginTop: "8px",
-                padding: "11px 20px",
-                borderRadius: "10px",
-                textAlign: "center",
-                fontWeight: 600,
-                fontSize: "15px",
-                textDecoration: "none",
-                color: "white",
-                background: "linear-gradient(135deg, #7c3aed, #5b21b6)",
-              }}
-            >
-              Teklif Al
-            </Link>
-          </nav>
-        </div>
-      )}
-    </header>
   );
 }
 
@@ -644,49 +466,31 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
           animate="visible"
           className="flex flex-col gap-5 sm:gap-6 lg:gap-7 items-center lg:items-start text-center lg:text-left"
         >
-          {/* Badge */}
-          <motion.div variants={fadeUp}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "6px 14px",
-                borderRadius: "100px",
-                background: "rgba(124,58,237,0.12)",
-                border: "1px solid rgba(124,58,237,0.3)",
-                fontSize: "13px",
-                fontWeight: 600,
-                color: "#a78bfa",
-              }}
-            >
-              <Sparkles size={13} />
-              Yeni: QR Menü Sistemi 2.0
-              <ChevronRight size={13} />
-            </div>
-          </motion.div>
 
           {/* Headline */}
-          <motion.div variants={fadeUp} className="w-full">
-            <h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-slate-100"
-              style={{ margin: 0, wordBreak: "break-word", lineHeight: 1.15 }}
-            >
-              {renderGradientText(settings.heroTitle)}
-            </h1>
+          <motion.div
+            variants={fadeUp}
+            className="w-full flex flex-col items-center lg:items-start text-center lg:text-left"
+          >
+
+            {/* Animasyonlu yazı */}
+            <AnimatedBrand />
+
+            {/* Ana başlık */}
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium mt-6 leading-relaxed max-w-[600px] text-slate-300">
+              İşletmenizi Büyüten <br />
+              <span className="text-white font-semibold">
+                Akıllı Dijital Sistemler
+              </span>
+            </h2>
           </motion.div>
 
           {/* Subtext */}
           <motion.p
             variants={fadeUp}
-            className="text-sm sm:text-base lg:text-lg max-w-[520px] mx-auto lg:mx-0"
-            style={{
-              lineHeight: 1.7,
-              color: "#94a3b8",
-              margin: 0,
-            }}
+            className="mt-4 text-slate-400 max-w-[520px] text-sm sm:text-base"
           >
-            {settings.heroSubtitle}
+            İşletmeler için modern web siteleri, özel yazılım projeleri ve dijital sistemler tasarlıyor; büyümeyi destekleyen güçlü çözümler sunuyoruz.
           </motion.p>
 
           {/* Feature bullets */}
@@ -723,7 +527,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
           {/* CTAs */}
           <motion.div variants={fadeUp} className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
             <Link
-              href="/services"
+              href="/projects"
               className="inline-flex items-center gap-2 rounded-xl font-bold text-white transition-all"
               style={{
                 padding: "11px 22px",
@@ -733,9 +537,10 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
                 textDecoration: "none",
               }}
             >
-              <QrCode size={15} />
-              {settings.heroPrimaryButton}
+              Projelerimizi İncele
+              <ArrowRight size={14} />
             </Link>
+
             <Link
               href="/services"
               className="inline-flex items-center gap-2 rounded-xl font-semibold transition-all"
@@ -748,48 +553,11 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
                 border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              {settings.heroSecondaryButton}
+              Hizmetlerimizi Gör
               <ArrowRight size={14} />
             </Link>
           </motion.div>
 
-          {/* Social proof */}
-          <motion.div
-            variants={fadeUp}
-            className="flex items-center gap-4 pt-2 justify-center lg:justify-start"
-          >
-            <div style={{ display: "flex" }}>
-              {["#7c3aed", "#06b6d4", "#10b981", "#f59e0b", "#ec4899"].map((color, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "50%",
-                    background: `linear-gradient(135deg, ${color}88, ${color}44)`,
-                    border: "2px solid #08090d",
-                    marginLeft: i > 0 ? "-10px" : "0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "12px",
-                  }}
-                >
-                  {["R", "C", "M", "A", "S"][i]}
-                </div>
-              ))}
-            </div>
-            <div>
-              <div style={{ display: "flex", gap: "2px", marginBottom: "2px" }}>
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} size={12} fill="#f59e0b" color="#f59e0b" />
-                ))}
-              </div>
-              <div style={{ fontSize: "12px", color: "#64748b" }}>
-                <span style={{ color: "#94a3b8", fontWeight: 600 }}>50+</span> aktif restoran güveniyor
-              </div>
-            </div>
-          </motion.div>
         </motion.div>
 
         {/* Right: Phone mockup */}
@@ -1578,7 +1346,7 @@ function BlogSection() {
                   maxWidth: "520px",
                 }}
               >
-                Yazılım, dijital çözümler ve QR Menü hakkında içerikler
+                Yazılım, teknoloji ve dijital dönüşüm dünyasındaki gelişmeleri paylaşıyoruz.
               </p>
             </div>
 
@@ -2095,11 +1863,11 @@ export default function HomePage() {
     <div style={{ background: "#08090d", minHeight: "100vh", color: "#f1f5f9", overflowX: "hidden" }}>
       <Navbar />
       <HeroSection settings={settings} />
-      <BlogSection />
       <StatsSection />
       <QRMenuSection settings={settings} />
       <ServicesSection settings={settings} />
       <TechSection />
+      <BlogSection />
       <CTASection settings={settings} />
       <Footer />
     </div>

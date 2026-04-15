@@ -77,6 +77,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <main className="min-h-screen bg-[#08090d] text-slate-100">
 
             {/* ── Hero ─────────────────────────────────────────────────────── */}
+            <div className="mx-auto w-full max-w-7xl px-4 pt-24 pb-2 sm:px-6 md:px-10">
+                <Link
+                    href="/projects"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm text-slate-200 backdrop-blur transition hover:bg-white/[0.08]"
+                >
+                    ← Projelere Dön
+                </Link>
+            </div>
+
             <div className="relative min-h-[260px] w-full overflow-hidden md:min-h-[380px] lg:min-h-[460px]">
                 {project.coverImage ? (
                     <Image
@@ -104,16 +113,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {/* Multi-layer overlay: darkens image, fades to page colour at bottom */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#08090d] via-[#08090d]/50 to-[#08090d]/10" />
 
-                {/* Back link — top-left of hero */}
-                <div className="absolute left-6 top-6 md:left-10 md:top-8">
-                    <Link
-                        href="/projects"
-                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-4 py-1.5 text-xs font-medium text-slate-300 backdrop-blur-sm transition hover:border-white/20 hover:text-white"
-                    >
-                        <ArrowLeft className="h-3.5 w-3.5" />
-                        Projelere Dön
-                    </Link>
-                </div>
 
                 {/* Title block anchored to bottom of hero */}
                 <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 md:px-10 lg:px-0">
@@ -144,16 +143,21 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
 
             {/* ── Page body ────────────────────────────────────────────────── */}
-            <div className="mx-auto max-w-7xl px-6 pb-28 pt-10 md:px-10 lg:px-6">
+            <div className="mx-auto max-w-7xl px-5 pb-24 pt-8 sm:px-6 md:px-10 lg:px-6">
                 <div className="lg:grid lg:grid-cols-[1fr_296px] lg:gap-14">
 
                     {/* ── Main content ─────────────────────────────────────── */}
                     <div className="min-w-0">
 
                         {/* Summary */}
-                        <p className="mb-12 max-w-2xl text-lg leading-8 text-slate-400">
-                            {project.summary}
-                        </p>
+                        <div className="mb-12 max-w-3xl rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/90">
+                                Kısa Özet
+                            </p>
+                            <p className="mt-3 text-base leading-8 text-slate-300 sm:text-lg">
+                                {project.summary}
+                            </p>
+                        </div>
 
                         <div className="space-y-16">
 
@@ -175,10 +179,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                             {/* Project detail */}
                             <section>
                                 <SectionHeading>Proje Detayı</SectionHeading>
-                                <div className="mt-6 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-7">
-                                    <p className="whitespace-pre-line leading-[1.9] text-slate-300">
+                                <div className="mt-6 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
+                                    <div className="space-y-5 whitespace-pre-line text-slate-300 leading-[1.95]">
                                         {project.content}
-                                    </p>
+                                    </div>
                                 </div>
                             </section>
 
@@ -228,6 +232,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                                     <p className="relative mx-auto mt-4 max-w-md text-base text-slate-400">
                                         Hayalinizdekileri gerçeğe dönüştürelim. Ücretsiz ön
                                         görüşme için hemen iletişime geçin.
+                                    </p><p className="relative mx-auto mt-4 max-w-md text-base leading-7 text-slate-400">
+                                        İşletmenize özel web, mobil veya yazılım projesi için bizimle iletişime geçin.
+                                        İhtiyacınızı analiz edip size uygun çözümü birlikte oluşturalım.
                                     </p>
                                     <div className="relative mt-8 flex flex-wrap items-center justify-center gap-4">
                                         <Link
@@ -321,12 +328,18 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
                         {/* Sidebar CTA */}
                         <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.05] p-5 text-center">
-                            <p className="text-sm font-medium leading-snug text-slate-300">
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300/80">
+                                Sonraki Adım
+                            </p>
+                            <p className="mt-3 text-sm font-medium leading-snug text-slate-200">
                                 Benzer bir proje yaptırmak ister misiniz?
+                            </p>
+                            <p className="mt-2 text-sm leading-6 text-slate-400">
+                                İhtiyacınıza uygun çözümü birlikte planlayalım.
                             </p>
                             <Link
                                 href="/iletisim"
-                                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-2.5 text-sm font-medium text-cyan-300 transition hover:bg-cyan-500/20 hover:text-cyan-200"
+                                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-sm font-medium text-cyan-300 transition hover:bg-cyan-500/20 hover:text-cyan-200"
                             >
                                 <MessageCircle className="h-4 w-4" />
                                 İletişime Geç

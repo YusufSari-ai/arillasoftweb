@@ -75,16 +75,18 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     const Icon = ICON_MAP[service.icon] ?? Wrench;
 
     return (
-        <main className="min-h-screen bg-[#08090d] px-6 py-20 text-slate-100">
+        <main className="min-h-screen bg-[#08090d] px-5 pt-28 pb-16 text-slate-100 sm:px-6 sm:pt-32 sm:pb-20">
             <div className="mx-auto max-w-4xl">
                 {/* Back link */}
-                <Link
-                    href="/services"
-                    className="mb-8 inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Tüm Hizmetler
-                </Link>
+                <div className="mb-10">
+                    <Link
+                        href="/services"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm text-slate-200 backdrop-blur transition hover:bg-white/[0.1]"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Hizmetlere Dön
+                    </Link>
+                </div>
 
                 <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
                     {/* Hero banner */}
@@ -104,37 +106,54 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                             <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
                                 {service.title}
                             </h1>
-                            <p className="mt-3 max-w-xl text-base text-slate-400">
-                                {service.shortDescription}
-                            </p>
+                            <div className="mt-4 max-w-2xl rounded-2xl border border-cyan-500/15 bg-cyan-500/5 px-5 py-4">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/90">
+                                    Kısa Özet
+                                </p>
+                                <p className="mt-2 text-sm leading-7 text-slate-300 sm:text-base">
+                                    {service.shortDescription}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                     {/* Content */}
                     <div className="p-8 md:p-10">
                         <h2 className="mb-4 text-lg font-semibold text-white">
-                            Hizmet Detayı
+                            Bu Hizmet Neleri Kapsar?
                         </h2>
-                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                            <p className="whitespace-pre-line leading-8 text-slate-300">
+                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                            <div className="space-y-5 whitespace-pre-line leading-[1.95] text-slate-300">
                                 {service.content}
-                            </p>
+                            </div>
                         </div>
 
                         {/* CTA */}
-                        <div className="mt-8 flex flex-wrap gap-4">
-                            <Link
-                                href="/iletisim"
-                                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                            >
-                                Teklif Al
-                            </Link>
-                            <Link
-                                href="/services"
-                                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
-                            >
-                                Diğer Hizmetler
-                            </Link>
+                        <div className="mt-10 rounded-2xl border border-cyan-500/15 bg-cyan-500/5 p-6">
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300/80">
+                                Sonraki Adım
+                            </p>
+                            <h3 className="mt-3 text-xl font-semibold text-white">
+                                Bu hizmet sizin için uygunsa birlikte planlayalım
+                            </h3>
+                            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+                                İhtiyacınıza uygun kapsamı belirleyelim, size en doğru çözümü birlikte oluşturalım.
+                            </p>
+
+                            <div className="mt-6 flex flex-wrap gap-4">
+                                <Link
+                                    href="/iletisim"
+                                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+                                >
+                                    Teklif Al
+                                </Link>
+                                <Link
+                                    href="/services"
+                                    className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+                                >
+                                    Diğer Hizmetler
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
