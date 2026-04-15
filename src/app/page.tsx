@@ -230,174 +230,159 @@ function renderGradientText(text: string) {
 // QR Phone Mockup
 // ─────────────────────────────────────────────
 function QRPhoneMockup() {
+  const cards = [
+    {
+      title: "Web Geliştirme",
+      text: "Modern, hızlı ve ölçeklenebilir web projeleri.",
+    },
+    {
+      title: "Mobil Uygulama",
+      text: "iOS ve Android uyumlu kullanıcı odaklı deneyimler.",
+    },
+    {
+      title: "Özel Yazılım",
+      text: "İşletmenize özel operasyon ve yönetim sistemleri.",
+    },
+    {
+      title: "API & Altyapı",
+      text: "Güvenli, performanslı ve sürdürülebilir backend yapıları.",
+    },
+  ];
+
   return (
     <div
       className="float-animation"
       style={{
         position: "relative",
-        width: "clamp(200px, 55vw, 280px)",
-        height: "clamp(380px, 110vw, 560px)",
-        maxWidth: "280px",
+        width: "100%",
+        maxWidth: "560px",
+        minHeight: "460px",
+        paddingTop: "20px",
       }}
     >
-      {/* Glow behind phone */}
+      <div
+        style={{
+          position: "absolute",
+          top: "40px",
+          left: "40px",
+          width: "180px",
+          height: "180px",
+          background: "rgba(124,58,237,0.18)",
+          filter: "blur(90px)",
+          borderRadius: "999px",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          right: "20px",
+          width: "180px",
+          height: "180px",
+          background: "rgba(6,182,212,0.14)",
+          filter: "blur(90px)",
+          borderRadius: "999px",
+          pointerEvents: "none",
+        }}
+      />
       <div
         style={{
           position: "absolute",
           inset: "-40px",
-          background: "radial-gradient(ellipse at center, rgba(124,58,237,0.25) 0%, transparent 70%)",
-          filter: "blur(20px)",
-          borderRadius: "50%",
+          background:
+            "radial-gradient(circle at 20% 20%, rgba(124,58,237,0.18), transparent 35%), radial-gradient(circle at 80% 30%, rgba(6,182,212,0.16), transparent 35%), radial-gradient(circle at 60% 80%, rgba(124,58,237,0.12), transparent 30%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
         }}
       />
-      {/* Phone frame */}
       <div
         style={{
-          position: "relative",
-          width: "clamp(200px, 55vw, 280px)",
-          height: "clamp(380px, 110vw, 560px)",
-          maxWidth: "280px",
-          borderRadius: "clamp(28px, 6vw, 40px)",
-          background: "linear-gradient(145deg, #1e1e2e, #0f0f1a)",
-          border: "2px solid rgba(255,255,255,0.12)",
-          boxShadow: "0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1)",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "8px 14px",
+          borderRadius: "999px",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          color: "#e2e8f0",
+          fontSize: "12px",
+          fontWeight: 600,
+          marginBottom: "16px",
+          backdropFilter: "blur(10px)",
         }}
       >
-        {/* Status bar */}
-        <div
-          style={{
-            height: "44px",
-            background: "rgba(255,255,255,0.03)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 20px",
-            fontSize: "11px",
-            color: "#94a3b8",
-          }}
-        >
-          <span>9:41</span>
-          <div
-            style={{
-              width: "120px",
-              height: "22px",
-              background: "#0f0f1a",
-              borderRadius: "20px",
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
-          />
-          <span>●●●</span>
-        </div>
+        Web • Mobil • Özel Yazılım
+      </div>
 
-        {/* App content */}
-        <div style={{ flex: 1, padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
-          {/* Restaurant header */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+        {cards.map((card, index) => (
           <div
+            key={card.title}
             style={{
-              borderRadius: "16px",
-              overflow: "hidden",
-              background: "linear-gradient(135deg, #7c3aed20, #06b6d420)",
-              border: "1px solid rgba(124,58,237,0.2)",
-              padding: "16px",
+              borderRadius: "24px",
+              padding: "22px",
+              minHeight: "170px",
+              background:
+                index % 2 === 0
+                  ? "linear-gradient(145deg, rgba(17,24,39,0.92), rgba(10,12,18,0.96))"
+                  : "linear-gradient(145deg, rgba(15,23,42,0.92), rgba(10,12,18,0.96))",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.28)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
             }}
           >
-            <div style={{ fontSize: "18px", fontWeight: 700, color: "#f1f5f9", marginBottom: "4px" }}>
-              🍕 La Bella Vita
-            </div>
-            <div style={{ fontSize: "11px", color: "#94a3b8" }}>İtalyan Mutfağı • Dijital Menü</div>
-          </div>
-
-          {/* Category pills */}
-          <div style={{ display: "flex", gap: "8px", overflowX: "auto" }}>
-            {["🔥 Popüler", "🍝 Makarna", "🥗 Salatalar"].map((cat, i) => (
-              <div
-                key={cat}
-                style={{
-                  padding: "5px 12px",
-                  borderRadius: "20px",
-                  fontSize: "10px",
-                  fontWeight: 600,
-                  whiteSpace: "nowrap",
-                  background: i === 0 ? "linear-gradient(135deg, #7c3aed, #06b6d4)" : "rgba(255,255,255,0.06)",
-                  color: i === 0 ? "white" : "#94a3b8",
-                  border: i === 0 ? "none" : "1px solid rgba(255,255,255,0.08)",
-                }}
-              >
-                {cat}
-              </div>
-            ))}
-          </div>
-
-          {/* Menu items */}
-          {[
-            { name: "Margherita Pizza", price: "₺180", badge: "⭐", desc: "Domates, mozzarella, fesleğen" },
-            { name: "Carbonara", price: "₺165", badge: "🔥", desc: "Guanciale, pecorino, karabiber" },
-            { name: "Tiramisu", price: "₺95", badge: "🍰", desc: "Mascarpone, espresso, kakao" },
-          ].map((item) => (
             <div
-              key={item.name}
               style={{
-                borderRadius: "12px",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                padding: "10px",
+                width: "46px",
+                height: "46px",
+                borderRadius: "14px",
+                background:
+                  index % 2 === 0
+                    ? "linear-gradient(135deg, rgba(124,58,237,0.22), rgba(124,58,237,0.08))"
+                    : "linear-gradient(135deg, rgba(6,182,212,0.22), rgba(6,182,212,0.08))",
+                border:
+                  index % 2 === 0
+                    ? "1px solid rgba(124,58,237,0.22)"
+                    : "1px solid rgba(6,182,212,0.22)",
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
+                justifyContent: "center",
+                fontSize: "18px",
+                color: index % 2 === 0 ? "#c4b5fd" : "#67e8f9",
               }}
             >
-              <div
+              {index === 0 ? "◫" : index === 1 ? "◉" : index === 2 ? "✦" : "▣"}
+            </div>
+
+            <div style={{ marginTop: "18px" }}>
+              <h3
                 style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "10px",
-                  background: "linear-gradient(135deg, rgba(124,58,237,0.3), rgba(6,182,212,0.3))",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "18px",
-                  flexShrink: 0,
+                  fontSize: "20px",
+                  fontWeight: 700,
+                  color: "#f8fafc",
+                  margin: "0 0 10px 0",
+                  letterSpacing: "-0.3px",
                 }}
               >
-                {item.badge}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: "#f1f5f9", marginBottom: "2px" }}>
-                  {item.name}
-                </div>
-                <div style={{ fontSize: "9px", color: "#64748b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {item.desc}
-                </div>
-              </div>
-              <div style={{ fontSize: "12px", fontWeight: 700, color: "#a78bfa", flexShrink: 0 }}>
-                {item.price}
-              </div>
+                {card.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14px",
+                  lineHeight: 1.8,
+                  color: "#94a3b8",
+                  margin: 0,
+                }}
+              >
+                {card.text}
+              </p>
             </div>
-          ))}
-
-          {/* QR icon at bottom */}
-          <div
-            style={{
-              marginTop: "auto",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "8px",
-              borderRadius: "10px",
-              background: "rgba(124,58,237,0.1)",
-              border: "1px solid rgba(124,58,237,0.2)",
-            }}
-          >
-            <QrCode size={12} color="#8b5cf6" />
-            <span style={{ fontSize: "9px", color: "#8b5cf6", fontWeight: 600 }}>
-              arillasoft.com/menu/labellav
-            </span>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
@@ -477,10 +462,10 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
             <AnimatedBrand />
 
             {/* Ana başlık */}
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium mt-6 leading-relaxed max-w-[600px] text-slate-300">
-              İşletmenizi Büyüten <br />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium mt-6 leading-tight max-w-[700px] text-slate-300">
+              İşinizi Dijitale Taşıyan <br />
               <span className="text-white font-semibold">
-                Akıllı Dijital Sistemler
+                Akıllı Yazılım Çözümleri
               </span>
             </h2>
           </motion.div>
@@ -488,38 +473,37 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
           {/* Subtext */}
           <motion.p
             variants={fadeUp}
-            className="mt-4 text-slate-400 max-w-[520px] text-sm sm:text-base"
+            className="mt-5 text-slate-400 max-w-[560px] text-sm sm:text-base leading-7"
           >
-            İşletmeler için modern web siteleri, özel yazılım projeleri ve dijital sistemler tasarlıyor; büyümeyi destekleyen güçlü çözümler sunuyoruz.
+            Web siteleri, özel yazılımlar ve dijital sistemlerle işletmenizi
+            daha hızlı, daha güçlü ve daha profesyonel hale getiriyoruz.
           </motion.p>
 
           {/* Feature bullets */}
           <motion.div
             variants={fadeUp}
-            className="flex flex-col gap-3 w-full max-w-xs sm:max-w-sm lg:max-w-none mx-auto lg:mx-0"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-3xl mx-auto lg:mx-0"
           >
             {[
-              "5 dakikada kurulum, sıfır teknik bilgi",
-              "Baskı maliyeti %100 ortadan kalkar",
-              "Anlık menü güncelleme, çoklu şube desteği",
+              {
+                title: "Hızlı Teslim",
+                text: "İhtiyacınıza uygun çözümleri hızlı şekilde yayına alıyoruz.",
+              },
+              {
+                title: "Güçlü Altyapı",
+                text: "Modern, güvenli ve ölçeklenebilir yazılım sistemleri kuruyoruz.",
+              },
+              {
+                title: "İş Odaklı Çözüm",
+                text: "Sadece yazılım değil, işletmenize değer katan sistemler geliştiriyoruz.",
+              },
             ].map((item) => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    borderRadius: "50%",
-                    background: "rgba(124,58,237,0.15)",
-                    border: "1px solid rgba(124,58,237,0.4)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <CheckCircle size={11} color="#a78bfa" />
-                </div>
-                <span style={{ fontSize: "15px", color: "#cbd5e1" }}>{item}</span>
+              <div
+                key={item.title}
+                className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
+              >
+                <p className="text-white font-semibold text-sm sm:text-base">{item.title}</p>
+                <p className="text-slate-400 text-xs sm:text-sm mt-2 leading-6">{item.text}</p>
               </div>
             ))}
           </motion.div>
@@ -542,7 +526,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
             </Link>
 
             <Link
-              href="/services"
+              href="/iletisim"
               className="inline-flex items-center gap-2 rounded-xl font-semibold transition-all"
               style={{
                 padding: "11px 22px",
@@ -553,7 +537,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
                 border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              Hizmetlerimizi Gör
+              Teklif Al
               <ArrowRight size={14} />
             </Link>
           </motion.div>
@@ -565,7 +549,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
           variants={scaleIn}
           initial="hidden"
           animate="visible"
-          className="flex justify-center items-center w-full overflow-hidden"
+          className="flex justify-center items-center w-full overflow-visible"
           style={{ maxWidth: "100%" }}
         >
           <QRPhoneMockup />
@@ -600,7 +584,7 @@ function HeroSection({ settings }: { settings: SiteSettings }) {
           className="pulse-glow"
         />
       </motion.div>
-    </section>
+    </section >
   );
 }
 
@@ -1749,7 +1733,7 @@ function Footer() {
             </h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
               {[
-                { label: "Hakkımızda", href: "/" },
+                { label: "Hakkımızda", href: "/hakkimizda" },
                 { label: "Projeler", href: "/projects" },
                 { label: "Blog", href: "/blog" },
                 { label: "Kariyer", href: "/kariyer" },
